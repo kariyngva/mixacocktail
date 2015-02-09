@@ -2,8 +2,10 @@ package models;
 
 import play.db.ebean.Model;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import java.util.List;
 
 /**
@@ -15,5 +17,7 @@ public class Cocktail extends Model {
     public String id;
     public String name;
     public String description;
-    public List<Ingredients> ingredients;
+
+    @OneToMany(cascade = CascadeType.PERSIST)
+    private List<Ingredients> ingredients;
 }

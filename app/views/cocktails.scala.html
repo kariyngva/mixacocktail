@@ -1,0 +1,27 @@
+@(cocktails:List[Cocktail])
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+
+
+<form action="@routes.Application.getCocktails()" method="post">
+    <input name="name" type="text"/>
+    <input name="description" type="text"/>
+    <button>Submit</button>
+</form>
+
+<div>
+    <ul>
+        @for(cocktail <- cocktails) {
+            <li>@cocktail.name</li>
+        }
+    </ul>
+
+</div>
+
+</body>
+</html>
