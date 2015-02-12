@@ -20,4 +20,12 @@ public class Ingredients extends Model {
     public void setName(String name) {
         this.name = name;
     }
+
+    public static Finder<String,Ingredients> find = new Finder<String,Ingredients>(
+            String.class, Ingredients.class
+    );
+
+    public static List<Ingredients> searchByName(String name){
+        return find.where().ieq("name", name).findList();
+    }
 }
