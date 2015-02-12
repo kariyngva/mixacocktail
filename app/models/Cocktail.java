@@ -20,4 +20,21 @@ public class Cocktail extends Model {
 
     @OneToMany(cascade = CascadeType.PERSIST)
     private List<Ingredients> ingredients;
+
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void addIngredient(Ingredients ingredient) {
+        ingredients.add(ingredient);
+    }
+
+    public List<Ingredients> getIngredients() {
+        return this.ingredients;
+    }
 }
