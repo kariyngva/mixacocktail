@@ -1,7 +1,30 @@
 @(message: String, bla: Integer)
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 
-@main("Welcome to Play") {
+    <title></title>
 
-    @play20.welcome(message, style = "Java")
+</head>
+<body>
 
-}
+<section class="search">
+    <form action="">
+        <div class="fi_txt">
+            <label for="search">Type in the name of a cocktail or ingredients</label>
+            <input id="search" type="text" name="search" value="" />
+        </div>
+        <div class="fi_btn"><input type="submit" value="Add" /></div>
+    </form>
+</section>
+
+<section class="results">
+    <h2>results go here</h2>
+</section>
+
+</body>
+</html>
+
+
