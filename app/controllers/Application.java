@@ -33,7 +33,11 @@ public class Application extends Controller {
             Logger.info("ingredients data is " + t);
 
             //create and save a new ingredient if not found?
-            //if()
+            //Ingredient ing = Ingredient.query(t).get();
+            /*if(ing < 0)
+            //{
+              cocktail.addIngredient(ing)
+            } else {*/
             Ingredients ingToAdd = new Ingredients();
             ingToAdd.setName(t);
             cocktail.addIngredient(ingToAdd);
