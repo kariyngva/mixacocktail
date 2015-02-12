@@ -35,6 +35,7 @@ public class Application extends Controller {
             Logger.info("ingredients data is " + t);
 
             //create and save a new ingredient if not found?
+
             List<Ingredients> ilist = Ingredients.searchByName(t);
 
             if (ilist.size() > 0) {
