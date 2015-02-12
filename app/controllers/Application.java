@@ -27,20 +27,31 @@ public class Application extends Controller {
         String[] ingredients = map.get("ingredient");
         String[] cname = map.get("name");
 
-        Ingredients ingredients1;
+
+
+
         // Loop for each checked question
         for (String t : ingredients) {
             Logger.info("ingredients data is " + t);
 
             //create and save a new ingredient if not found?
-            //Ingredient ing = Ingredient.query(t).get();
-            /*if(ing < 0)
-            //{
-              cocktail.addIngredient(ing)
-            } else {*/
-            Ingredients ingToAdd = new Ingredients();
-            ingToAdd.setName(t);
-            cocktail.addIngredient(ingToAdd);
+            List<Ingredients> ilist = Ingredients.searchByName(t);
+
+            if (ilist.size() > 0) {
+                cocktail.addIngredient(ilist.get(0));
+                Logger.info("Hráefni til");
+            }
+            //Ef ekkert hraefni er slegid inn, viljum ekki tomann streng i nidurstodur
+            else if (t.equals("")){
+
+            }
+            else {
+                Ingredients ingToAdd = new Ingredients();
+                ingToAdd.setName(t);
+                cocktail.addIngredient(ingToAdd);
+                Logger.info("Hráefni ekki til");
+            }
+
         }
 
         cocktail.setName(cname[0]);
