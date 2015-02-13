@@ -11,7 +11,7 @@ public class Global extends GlobalSettings {
     public void onStart(Application app) {
         Logger.info("Application has started");
 
-        if (Ingredients.searchByName("Rum").size() == 0) {
+        if ( Ingredients.searchByName("Rum").isEmpty() ) {
             String[] ingredients = {"Rum", "Vodka", "Tequila", "Gin", "Passoa", "Coke", "Strawberries", "Tonic", "Sugar"};
 
             for (String a : ingredients ) {
@@ -21,7 +21,6 @@ public class Global extends GlobalSettings {
             }
 
             String[] cocktails = {"Mojito", "Rum and coke", "Gin and tonic", "Strawberry Daquiri"};
-
 
             for (String c : cocktails) {
                 Cocktail cocktail = new Cocktail();
