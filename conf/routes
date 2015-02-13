@@ -4,6 +4,7 @@
 
 # Home page
 GET     /                           controllers.Application.index()
+GET     /findCocktailByIngredient   controllers.Application.findCocktailByIngredient()
 GET     /cocktails                  controllers.Application.getCocktails()
 POST    /cocktails                  controllers.Application.addCocktail()
 # Map static resources from the /public folder to the /assets URL path

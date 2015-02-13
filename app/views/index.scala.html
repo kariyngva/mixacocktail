@@ -1,30 +1,29 @@
 @(message: String, bla: Integer)
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
-<head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+@main(title = "Mix a cocktail") {
+    <div class="wrap">
 
-    <title></title>
+        <section class="search">
 
-</head>
-<body>
+            <form  action="">
+                <div class="fi_txt ">
+                    <label for="search">Type in the name of a cocktail or ingredients</label>
+                    <input id="search" type="text" name="search" value="" />
+                </div>
+                <div class="fi_btn"><input type="submit" value="Add" /></div>
+            </form>
 
-<section class="search">
-    <form action="">
-        <div class="fi_txt">
-            <label for="search">Type in the name of a cocktail or ingredients</label>
-            <input id="search" type="text" name="search" value="" />
-        </div>
-        <div class="fi_btn"><input type="submit" value="Add" /></div>
-    </form>
-</section>
+            <div class="tags">
+                <ul>
 
-<section class="results">
-    <h2>results go here</h2>
-</section>
+                </ul>
+            </div>
+        </section>
 
-</body>
-</html>
+        <section class="results">
+            <h2>results go here</h2>
+        </section>
+    </div>
+}
+
 
 

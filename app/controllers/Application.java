@@ -15,6 +15,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static play.libs.Json.toJson;
+
 public class Application extends Controller {
 
     public static Result index() {
@@ -27,24 +29,16 @@ public class Application extends Controller {
         String[] ingredients = map.get("ingredient");
         String[] cname = map.get("name");
 
-
-
-
         // Loop for each checked question
         for (String t : ingredients) {
-            Logger.info("ingredients data is " + t);
-
-            //create and save a new ingredient if not found?
-
             List<Ingredients> ilist = Ingredients.searchByName(t);
 
             if (ilist.size() > 0) {
                 cocktail.addIngredient(ilist.get(0));
                 Logger.info("Hráefni til");
             }
-            //Ef ekkert hraefni er slegid inn, viljum ekki tomann streng i nidurstodur
             else if (t.equals("")){
-
+                //Ef ekkert hraefni er slegid inn, viljum ekki tomann streng i nidurstodur
             }
             else {
                 Ingredients ingToAdd = new Ingredients();
@@ -52,12 +46,9 @@ public class Application extends Controller {
                 cocktail.addIngredient(ingToAdd);
                 Logger.info("Hráefni ekki til");
             }
-
         }
 
         cocktail.setName(cname[0]);
-        //Cocktail cocktail = Form.form(Cocktail.class).bindFromRequest().get();
-
         cocktail.save();
         return redirect(routes.Application.getCocktails());
 
@@ -66,5 +57,20 @@ public class Application extends Controller {
     public static Result getCocktails() {
         List<Cocktail> clist = new Model.Finder(String.class, Cocktail.class).all();
         return ok(cocktails.render(clist));
+    }
+
+    public static Result findCocktailByIngredient() {
+        //get parameter cut to string
+        String[] parameters = request().uri().split("\\?")[1].split("-");
+
+        List<Cocktail> results = Cocktail.searchByIngredients( Ingredients.searchByNames(parameters) );
+
+        //Búa til list af ingredient út frá string array
+        //fá lista af cocktials sem innihalda hráefni úr þeim lista
+        //ef sá listi er ekki tómur, returna lista
+        //gera aðra leit sem inniheldur cocktails sem eru með einhver hráefnin úr strengja array
+
+        //List<Cocktail> results = Cocktail.searchByIngredient( Ingredients.searchByName("Rum").get(0) );
+        return ok( toJson(results) );
     }
 }

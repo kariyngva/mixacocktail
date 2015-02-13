@@ -2,10 +2,7 @@ package models;
 
 import play.db.ebean.Model;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.List;
 
 /**
@@ -18,9 +15,8 @@ public class Cocktail extends Model {
     public String name;
     public String description;
 
-    @OneToMany(cascade = CascadeType.PERSIST)
+    @ManyToMany(cascade = CascadeType.PERSIST)
     private List<Ingredients> ingredients;
-
 
     public void setName(String name) {
         this.name = name;
@@ -36,5 +32,19 @@ public class Cocktail extends Model {
 
     public List<Ingredients> getIngredients() {
         return this.ingredients;
+    }
+
+    public static Finder<String,Cocktail> find = new Finder<String,Cocktail>(
+            String.class, Cocktail.class
+    );
+
+    public static List<Cocktail> searchByIngredient(Ingredients ingredient){
+        return find.where().in("ingredients", ingredient).findList();
+        //return find.where().ieq("name", name).findList();
+    }
+
+    public static List<Cocktail> searchByIngredients(List<Ingredients> ingredients) {
+        //TODO: create proper query.
+        return find.where().in("ingredients", ingredients).findList();
     }
 }
