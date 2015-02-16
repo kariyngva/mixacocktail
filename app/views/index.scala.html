@@ -4,9 +4,9 @@
 
         <section class="search">
 
-            <form  action="">
+            <form  action="@routes.Application.findCocktailByIngredient()">
+                <label for="search">Type in the name of a cocktail or ingredients</label>
                 <div class="fi_txt ">
-                    <label for="search">Type in the name of a cocktail or ingredients</label>
                     <input id="search" type="text" name="search" value="" />
                 </div>
                 <div class="fi_btn"><input type="submit" value="Add" /></div>
@@ -20,7 +20,7 @@
         </section>
 
         <section class="results">
-            <h2>results go here</h2>
+            <h2>And your results....</h2>
         </section>
     </div>
 }

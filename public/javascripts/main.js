@@ -25,9 +25,12 @@
                     tagList.prepend('<li><span>' + searchInput.val() + '</span><a class="removetag" href="#removetag">x</a></li>');
                     searchInput.val('');
                     //framkvæma leit);
-                    getCocktails('/cocktails', getTagList() );
+                    getCocktails( form.attr('action'), getTagList() );
                   }
-
+                  else if ( !tagList.find('li').length )
+                  {
+                    $('.results').empty();
+                  }
                 });
 
           $doc
@@ -38,7 +41,13 @@
                       liTextElm = link.parent().find('span');
 
                   li.remove();
-                  getCocktails('/cocktails', getTagList() );
+
+                  if ( !tagList.find('li').length )
+                  {
+                    $('.results').empty();
+                  }
+
+                  getCocktails( form.attr('action'), getTagList() );
 
                 });
     };
@@ -59,20 +68,47 @@
     };
 
   var getCocktails = function ( url, queryString ) {
-
-          $html.addClass('ajax-wait');
-          $.get(
-                url + '?' +  queryString
-              )
-            .done(function(data) {
-                data = $(data).find('.results');
-                $('.results').append(data);
-              })
-            .always(function() {
-                $html.removeClass('ajax-wait');
-              });
+          if ( queryString.length )
+          {
+            $html.addClass('ajax-wait');
+            $.get(
+                  url + '?' +  queryString
+                )
+              .done(function(data) {
+                  $('.results').empty();
+                  $('.results').append( generateMarkup(data) );
+                })
+              .always(function() {
+                  $html.removeClass('ajax-wait');
+                });
+          }
     }
 
+  var generateMarkup = function( data ) {
+          //[{"id":"1","name":"Mojito","description":"Desc here","ingredients":[{"id":"1","name":"Rum"},{"id":"9","name":"Sugar"}]},{"id":"4","name":"Strawberry Daquiri","description":"Desc here","ingredients":[{"id":"1","name":"Rum"},{"id":"7","name":"Strawberries"}]}]
+          var results = $('<div class="rescontainer"></div>');
+          for (var i = 0; i < data.length; i++) {
+              var cjson = data[i],
+                  ingredients = $('<ul></ul>'),
+                  cocktailElm = $('<div class="cocktail">' +
+                                    '<h2>' + cjson.name + '</h2>' +
+                                    '<p>Description:<br/>' + cjson.description + '</p>' +
+                                    '<p>' + 'Ingredients : '+ '</p>'+
+                                    '<div class="rating">no rating yet</div>' +
+                                  '</div>');
+
+              //Iterate over ingredients for given cocktail
+              for (var j = 0; j < cjson.ingredients.length; j++) {
+                  var ingredient = cjson.ingredients[j];
+                  ingredients.append('<li>' + ingredient.name + '</li>');
+              }
+
+              //add ingredients to element
+              cocktailElm.append( ingredients );
+              results.append( cocktailElm );
+          }
+          return results;
+    };
 
   // =========================================================================================================================
   //   Run Init Actions
