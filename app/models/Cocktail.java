@@ -23,6 +23,7 @@ public class Cocktail extends Model {
 
     @ManyToMany(cascade = CascadeType.PERSIST)
     private List<Ingredients> ingredients;
+    private List<Cocktail> cocktail;
 
     public void setName(String name) {
         this.name = name;
@@ -43,6 +44,16 @@ public class Cocktail extends Model {
     public static Finder<String,Cocktail> find = new Finder<String,Cocktail>(
             String.class, Cocktail.class
     );
+
+    public static List<Cocktail> getAllCocktails(int p){
+        PagingList<Cocktail> pagingList =
+                Ebean.find(Cocktail.class)
+                        .findPagingList(10);
+        Page<Cocktail> page = pagingList.getPage(p);
+        List<Cocktail> list = page.getList();
+        return list;
+    };
+
 
     public static List<Cocktail> searchByIngredient(Ingredients ingredient){
         return find.where().in("ingredients", ingredient).findList();

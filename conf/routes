@@ -7,5 +7,6 @@ GET     /                           controllers.Application.index()
 GET     /findCocktailByIngredient   controllers.Application.findCocktailByIngredient()
 GET     /cocktails                  controllers.Application.getCocktails()
 POST    /cocktails                  controllers.Application.addCocktail()
+GET     /allCocktails/:page         controllers.Application.getAllCocktails(page: Integer)
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
