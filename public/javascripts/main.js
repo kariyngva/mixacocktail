@@ -10,6 +10,23 @@
   //   Actions
   // =========================================================================================================================
 
+  var prepNav = function(){
+          var links = $('.nav');
+          var sLink = links.find('.searchLink');
+          var sLinkHref = sLink.attr('href');
+          var page = 0;
+          console.log(sLink);
+
+          sLink
+              .on('click', function(e){
+                  e.preventDefault();
+                  console.log('eoooo');
+                  getCocktails( sLinkHref, '/' + page );
+                  page++;
+              });
+
+
+  };
 
   var prepSearch = function () {
           var form = $('.search form'),
@@ -25,7 +42,7 @@
                     tagList.prepend('<li><span>' + searchInput.val() + '</span><a class="removetag" href="#removetag">x</a></li>');
                     searchInput.val('');
                     //framkvæma leit);
-                    getCocktails( form.attr('action'), getTagList() );
+                    getCocktails( form.attr('action'), '?' + getTagList() );
                   }
                   else if ( !tagList.find('li').length )
                   {
@@ -47,7 +64,7 @@
                     $('.results').empty();
                   }
 
-                  getCocktails( form.attr('action'), getTagList() );
+                  getCocktails( form.attr('action'), '?' + getTagList() );
 
                 });
     };
@@ -72,7 +89,7 @@
           {
             $html.addClass('ajax-wait');
             $.get(
-                  url + '?' +  queryString
+                  url +  queryString
                 )
               .done(function(data) {
                   $('.results').empty();
@@ -115,5 +132,6 @@
   // =========================================================================================================================
 
   prepSearch();
+  prepNav();
 
 })();
