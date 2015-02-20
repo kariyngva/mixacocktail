@@ -111,7 +111,6 @@
                                     '<h2>' + cjson.name + '</h2>' +
                                     '<p>Description:<br/>' + cjson.description + '</p>' +
                                     '<p>' + 'Ingredients : '+ '</p>'+
-                                    '<div class="rating">no rating yet</div>' +
                                   '</div>');
 
               //Iterate over ingredients for given cocktail
