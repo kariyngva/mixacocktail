@@ -1,9 +1,14 @@
 package models;
 
+import com.avaje.ebean.*;
+import com.avaje.ebean.Query;
+import play.Logger;
 import play.db.ebean.Model;
+import scala.collection.immutable.Map;
 
 import javax.persistence.*;
 import java.util.List;
+
 
 /**
  * Created by elsamjoll on 2/3/15.
@@ -11,7 +16,8 @@ import java.util.List;
 @Entity
 public class Cocktail extends Model {
     @Id
-    public String id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    public Long id;
     public String name;
     public String description;
 
@@ -44,7 +50,39 @@ public class Cocktail extends Model {
     }
 
     public static List<Cocktail> searchByIngredients(List<Ingredients> ingredients) {
-        //TODO: create proper query.
-        return find.where().in("ingredients", ingredients).findList();
+        String sql = "SELECT id, name, description FROM cocktail WHERE id IN " +
+                      "(SELECT cocktail_id FROM cocktail_ingredients WHERE ingredients_id IN" +
+                      " (SELECT id FROM ingredients";
+
+        int listSize = ingredients.size() == 1 ? 0 : 1;
+
+        for( Ingredients ingr : ingredients ){
+            if ( ingredients.indexOf( ingr ) == 0 )
+            {
+                sql += " WHERE name = '" + ingr.name + "'";
+            }
+            else
+            {
+                sql += " OR name = '" + ingr.name + "'";
+            }
+        }
+
+        sql += ") group by cocktail_id HAVING COUNT(*)>" + listSize + ");";
+
+
+        Logger.info("--------------");
+        Logger.info( "" + ingredients.size() );
+        Logger.info(sql);
+        RawSql rawSql =
+                RawSqlBuilder.parse(sql)
+                    .columnMapping("id", "id")
+                    .columnMapping("name", "name")
+                    .columnMapping("description", "description")
+                        .create();
+
+        Query<Cocktail> query = Ebean.find(Cocktail.class);
+        query.setRawSql(rawSql);
+
+        return query.findList();
     }
 }

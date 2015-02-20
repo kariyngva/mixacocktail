@@ -9,6 +9,7 @@ import java.util.List;
 
 public class Global extends GlobalSettings {
     public void onStart(Application app) {
+
         Logger.info("Application has started");
 
         if ( Ingredients.searchByName("Rum").isEmpty() ) {

@@ -1,13 +1,12 @@
 package models;
 
+import play.Logger;
 import play.data.validation.Constraints;
 import play.db.ebean.Model;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
+import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -18,7 +17,8 @@ public class Ingredients extends Model {
  //   @ManyToMany(cascade = CascadeType.PERSIST)
 
     @Id
-    public String id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    public Long id;
 
     @Constraints.Required
     public String name;
@@ -27,8 +27,8 @@ public class Ingredients extends Model {
         this.name = name;
     }
 
-    public static Finder<String,Ingredients> find = new Finder<String,Ingredients>(
-            String.class, Ingredients.class
+    public static Finder<Long,Ingredients> find = new Finder<Long,Ingredients>(
+            Long.class, Ingredients.class
     );
 
     public static List<Ingredients> searchByName(String name){

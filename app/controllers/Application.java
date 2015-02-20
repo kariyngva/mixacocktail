@@ -1,17 +1,11 @@
 package controllers;
 
-import models.Cocktail;
-import models.Ingredients;
 import play.*;
-import play.data.DynamicForm;
-import play.data.Form;
+import models.Ingredients;
+import models.Cocktail;
 import play.db.ebean.Model;
 import play.mvc.*;
-
 import views.html.*;
-import views.html.helper.form;
-
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,7 +14,9 @@ import static play.libs.Json.toJson;
 public class Application extends Controller {
 
     public static Result index() {
+
         return ok(index.render("Your new application is ready.", 10));
+
     }
 
     public static Result addCocktail() {
@@ -62,7 +58,6 @@ public class Application extends Controller {
     public static Result findCocktailByIngredient() {
         //get parameter cut to string
         String[] parameters = request().uri().split("\\?")[1].split("-");
-
         List<Cocktail> results = Cocktail.searchByIngredients( Ingredients.searchByNames(parameters) );
 
         //Búa til list af ingredient út frá string array
