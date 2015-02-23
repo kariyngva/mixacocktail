@@ -50,29 +50,37 @@ public class Cocktail extends Model {
     }
 
     public static List<Cocktail> searchByIngredients(List<Ingredients> ingredients) {
-        String sql = "SELECT id, name, description FROM cocktail WHERE id IN " +
-                      "(SELECT cocktail_id FROM cocktail_ingredients WHERE ingredients_id IN" +
-                      " (SELECT id FROM ingredients";
-
-        int listSize = ingredients.size() == 1 ? 0 : 1;
+        String ingredientIds = "";
 
         for( Ingredients ingr : ingredients ){
             if ( ingredients.indexOf( ingr ) == 0 )
             {
-                sql += " WHERE name = '" + ingr.name + "'";
+                ingredientIds += ingr.id;
             }
             else
             {
-                sql += " OR name = '" + ingr.name + "'";
+                ingredientIds += ", "  + ingr.id;
             }
         }
 
-        sql += ") group by cocktail_id HAVING COUNT(*)>" + listSize + ");";
+        String sql = "select id, name, description from " +
+                "(select " +
+                "count(ingredients_id) as matching_ingredients, " +
+                "(select count(*) from cocktail_ingredients as ci0 where ci0.cocktail_id = c.id) as total_ingredients, " +
+                "((select count(*) from cocktail_ingredients as ci0 where ci0.cocktail_id = c.id) - count(ingredients_id)) as missing_ingredients, " +
+                "c.name, " +
+                "c.id, " +
+                "c.description " +
+                "from " +
+                "cocktail c " +
+                "left join " +
+                "cocktail_ingredients ci " +
+                "on c.id = ci.cocktail_id " +
+                "where " +
+                "ingredients_id in ("+ ingredientIds +") " +
+                "group by c.id,c.name " +
+                "order by missing_ingredients asc) as subq;";
 
-
-        Logger.info("--------------");
-        Logger.info( "" + ingredients.size() );
-        Logger.info(sql);
         RawSql rawSql =
                 RawSqlBuilder.parse(sql)
                     .columnMapping("id", "id")
