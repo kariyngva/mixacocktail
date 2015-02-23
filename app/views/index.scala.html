@@ -2,6 +2,13 @@
 @main(title = "Mix a cocktail") {
     <div class="wrap">
 
+        <div class="nav">
+            <ul>
+                <li><a class="searchLink" href="/allCocktails">Search</a></li>
+                <li><a class="list" href="#list">List of Cocktails</a></li>
+            </ul>
+        </div>
+
         <section class="search">
 
             <form  action="@routes.Application.findCocktailByIngredient()">

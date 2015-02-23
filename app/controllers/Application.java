@@ -54,6 +54,9 @@ public class Application extends Controller {
         List<Cocktail> clist = new Model.Finder(String.class, Cocktail.class).all();
         return ok(cocktails.render(clist));
     }
+    public static Result getAllCocktails(int page){
+        return ok( toJson(Cocktail.getAllCocktails(page)) );
+    }
 
     public static Result findCocktailByIngredient() {
         //get parameter cut to string
