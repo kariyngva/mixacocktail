@@ -48,7 +48,8 @@ public class Cocktail extends Model {
     public static List<Cocktail> getAllCocktails(int p){
         PagingList<Cocktail> pagingList =
                 Ebean.find(Cocktail.class)
-                        .findPagingList(10);
+                        //skilar bara einni nidurstodu per page
+                        .findPagingList(1);
         Page<Cocktail> page = pagingList.getPage(p);
         List<Cocktail> list = page.getList();
         return list;

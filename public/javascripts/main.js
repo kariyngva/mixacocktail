@@ -12,19 +12,51 @@
 
   var prepNav = function(){
           var links = $('.nav');
+          var cLink = links.find('.list');
+          var cLinkHref = cLink.attr('href');
           var sLink = links.find('.searchLink');
-          var sLinkHref = sLink.attr('href');
+          var sLinkHref = cLink.attr('href');
           var page = 0;
-          console.log(sLink);
-
+          //fyrir listofcocktails takkann
+          cLink
+              .on('click', function(e){
+                e.preventDefault();
+                if(!$(this).is('.current'))
+                {
+                  $('.nav .current').removeClass('current');
+                  $(this).addClass('current'); 
+                  getCocktails( cLinkHref, '/' + page,true );
+                  page++;
+                  $win.on('scroll', function(){
+                    //Skroll fyrir listofcocktails takkann
+                    if( $win.scrollTop() == $doc.height() - $win.height() )
+                    {
+                      getCocktails(cLinkHref, '/' + page,false );
+                       page++;
+                    }
+                  });
+                }             
+              });
+          //fyrir search takkann
           sLink
               .on('click', function(e){
-                  e.preventDefault();
-                  console.log('eoooo');
-                  getCocktails( sLinkHref, '/' + page );
+                e.preventDefault();
+                if(!$(this).is('.current'))
+                {
+                  $('.nav .current').removeClass('current');
+                  $(this).addClass('current'); 
+                  getCocktails( sLinkHref, '/' + page,true );
                   page++;
+                  //Skroll fyrir search takkann
+                  $win.on('scroll', function(){
+                    if( $win.scrollTop() == $doc.height() - $win.height() )
+                    {
+                      //getCocktails(sLinkHref, '/' + page,false );
+                      //page++;
+                    }
+                  });
+                }
               });
-
 
   };
 
@@ -42,7 +74,7 @@
                     tagList.prepend('<li><span>' + searchInput.val() + '</span><a class="removetag" href="#removetag">x</a></li>');
                     searchInput.val('');
                     //framkvæma leit);
-                    getCocktails( form.attr('action'), '?' + getTagList() );
+                    getCocktails( form.attr('action'), '?' + getTagList(),true );
                   }
                   else if ( !tagList.find('li').length )
                   {
@@ -64,7 +96,7 @@
                     $('.results').empty();
                   }
 
-                  getCocktails( form.attr('action'), '?' + getTagList() );
+                  getCocktails( form.attr('action'), '?' + getTagList(),true );
 
                 });
     };
@@ -84,7 +116,7 @@
           return tagString;
     };
 
-  var getCocktails = function ( url, queryString ) {
+  var getCocktails = function ( url, queryString, empty ) {
           if ( queryString.length )
           {
             $html.addClass('ajax-wait');
@@ -92,7 +124,7 @@
                   url +  queryString
                 )
               .done(function(data) {
-                  $('.results').empty();
+                  empty && $('.results').empty();
                   $('.results').append( generateMarkup(data) );
                 })
               .always(function() {
