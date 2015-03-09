@@ -68,6 +68,7 @@ public class Application extends Controller {
         List<Cocktail> clist = new Model.Finder(String.class, Cocktail.class).all();
         return ok(cocktails.render(clist));
     }
+
     /**
      * Aðferð: Nær í niðurstöður af kokteilum á /cocktails
      *
@@ -84,7 +85,6 @@ public class Application extends Controller {
      * @return: skilar Json með öllum þeim kokteilum sem innihalda innslegin hráefni.
      **/
     public static Result findCocktailByIngredient() {
-        //TODO get parameter cut to string
         String[] parameters = request().uri().split("\\?")[1].split("-");
         List<Cocktail> results = Cocktail.searchByIngredients( Ingredients.searchByNames(parameters) );
         return ok( toJson(results) );

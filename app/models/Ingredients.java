@@ -36,9 +36,10 @@ public class Ingredients extends Model {
     }
 
     /**
-     * Aðferð: Leitar af Ingredients af taginu Long í Ingredients klasa.
+     * Aðferð: Finder er leitar hlutur fyrir Ingredients með ID af taginu Long.
      *
-     * @param Ingredients er af taginu Long.
+     * @param Ingredients hluturinn sem leitarinn er fyrir og Long er
+     *                 tagið sem auðkenni hlutarins er af.
      **/
     public static Finder<Long,Ingredients> find = new Finder<Long,Ingredients>(
             Long.class, Ingredients.class
@@ -54,7 +55,7 @@ public class Ingredients extends Model {
     }
 
     /**
-     * Aðferð: Leitar í Ingredients lista eftir mörgun innslegnum nafni hráefnum.
+     * Aðferð: Leitar í Ingredients lista að mörgun innslegnum hráefnum, eftir nafni.
      *
      * @return: Skilar fylki af hráefnum sem innihalda þau nöfn sem leitað var að.
      **/

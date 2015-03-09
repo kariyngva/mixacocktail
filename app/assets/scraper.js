@@ -93,16 +93,20 @@ var scrapePromise = function (url) {
 
         // var nameCorrect = name.indexOf
         //remove parts from name e.g. (1 part) or (2 parts)
-        console.log('----------');
-        console.log(name)
         name = name.replace(/^\([0-9]\s\bpart[s]?\)\s(\w+)/, '$1');
-        console.log(name)
 
         conn
-            .query('SELECT id FROM ingredients WHERE name LIKE ?', name.trim(), function ( err, result ) {
+            .query('SELECT id FROM ingredients WHERE name = ?', name.trim(), function ( err, result ) {
                 if ( result.length > 0 )
                 {
+                  console.log('ingredients query:' + name);
+                  console.log(result);
                   id = result[0].id;
+                }
+                else
+                {
+                  console.log('ingredients query:' + name);
+                  console.log(result);
                 }
               }).on('end', function () {
                   if ( !id )
@@ -123,6 +127,12 @@ var scrapePromise = function (url) {
                             insertCocktailIngredientsRelation( conn, {'ingredients_id': id, 'cocktail_id': cid} );
                         });
                   }
+                  else
+                  {
+                    console.log( 'insert cocktail to ingredients relation' );
+                    console.log( {'ingredients_id': id, 'cocktail_id': cid} );
+                    insertCocktailIngredientsRelation( conn, {'ingredients_id': id, 'cocktail_id': cid} );
+                  }
                 });
     };
 
@@ -132,7 +142,6 @@ var scrapePromise = function (url) {
           var tempCocktail = {'name': cocktailName, 'description': description},
               id;
 
-          console.log('insertCocktail:');
         conn
             .query('SELECT id FROM cocktail WHERE name LIKE ?', name, function ( err, result ) {
                 //if result.length is larger than
@@ -159,12 +168,10 @@ var scrapePromise = function (url) {
                       }).on('end', function () {
 
                           //if tempCocktail.id is not set we can update cocktail_ingredients
-                          console.log(tempCocktail);
                           if ( tempCocktail.id )
                           {
                               for (var i = 0; i < ingredients.length; i++)
                               {
-                                console.log( 'call from insertCocktail to handleIngredients' );
                                 handleIngredients(conn, ingredients[i], tempCocktail.id);
                               }
                           }
@@ -198,9 +205,6 @@ requestPromise('http://en.wikipedia.org/wiki/List_of_IBA_official_cocktails')
                     scrapePromise('http://en.wikipedia.org' + li.find('a').eq(0).attr('href') )
                         .done(function (res) {
                             // var cocktail_ingredients = [];
-                            console.log('scrapePromise:');
-                            console.log(res);
-
                             insertCocktail( connection, res.name, res.description, res.ingredientNames );
                       });
                   }
