@@ -1,34 +1,9 @@
 var request = require('request');
 var cheerio = require('cheerio');
 var Promise = require('promise');
-
-var scrape = function (url) {
-        var cocktail;
-        requestPromise(url)
-            .then(function (data) {
-                $ = cheerio.load(data);
-                var cocktail;
-                var ingredientNames = [],
-                    ingredientAmount = [];
-
-                //We assume the measuring unit is "cl"
-                $('td.ingredient ul li')
-                    .each(function () {
-
-                        var ingredient = $(this).text().split('cl');
-                        ingredientNames.push( ingredient[1] );
-                        ingredientAmount.push( parseFloat( ingredient[0] )  );
-                      });
-
-                cocktail = {'name': $('#firstHeading').text(),
-                                  'description': $('p').not('table p').eq(0).text(), // this is hopefully the description.
-                                  'ingredientNames' : ingredientNames,
-                                  'ingredientAmount' : ingredientAmount
-                                };
-              }, function (err) {
-                  console.error("%s; %s", err.message, url);
-                });
-  };
+var mysql   = require('mysql');
+var http    = require('http');
+var allIngredients = [];
 
 var requestPromise = function (url) {
         return new Promise(function (resolve, reject) {
@@ -47,6 +22,7 @@ var requestPromise = function (url) {
               });
           });
   };
+
 var scrapePromise = function (url) {
         return new Promise(function (resolve, reject) {
             requestPromise(url)
@@ -59,12 +35,20 @@ var scrapePromise = function (url) {
                     //We assume the measuring unit is "cl"
                     $('td.ingredient ul li')
                         .each(function () {
-                            var ingredient = $(this).text().split('cl');
-                            ingredientNames.push( ingredient[1] );
-                            ingredientAmount.push( parseFloat( ingredient[0] )  );
+                            var ingredient = $(this).text().split('cl'),
+                                name = ingredient[1].trim().toLowerCase(),
+                                amount = parseFloat( ingredient[0] );
+
+                            ingredientNames.push( name );
+                            ingredientAmount.push( amount );
+
+                            if ( allIngredients.indexOf( name ) < 0 )
+                            {
+                              allIngredients.push({ 'name': name, 'amount': amount });
+                            }
                           });
 
-                    cocktail = {'name': $('#firstHeading').text(),
+                    cocktail = {'name': $('#firstHeading').text().trim(),
                                       'description': $('p').not('table p').eq(0).text(), // this is hopefully the description.
                                       'ingredientNames' : ingredientNames,
                                       'ingredientAmount' : ingredientAmount
@@ -85,23 +69,144 @@ var scrapePromise = function (url) {
   };
 
 
-  request('http://en.wikipedia.org/wiki/List_of_IBA_official_cocktails', function (err, resp, body) {
-      if ( err )
-      {
-        throw err;
-      }
-      $ = cheerio.load(body);
-      var lis = $('.multicol li');
+  var connection = mysql.createConnection({
+    host     : 'mixacocktail.net',
+    user     : 'play',
+    password : 'solowsolow',
+    database : 'scrape_test'
+  });
 
-      lis
-          .each(function (i, elm) {
-            var li = $(this);
-              if ( !li.find('a.new').length && i < 10)
-              {
-                scrapePromise('http://en.wikipedia.org' + li.find('a').eq(0).attr('href') ).done(function (res) {
-                  console.log( res );
-                  //todo save object to mysql
-                  });
-              }
-            });
-    });
+  // connection.connect(function(err) {
+  //   if ( err )
+  //   {
+  //     console.log('mysql failure ' + err);
+  //   }
+  //   else
+  //   {
+  //     console.log('mysql connection made');
+  //   }
+  // });
+  var allCocktails = [];
+
+  var handleIngredients = function ( conn, name, cid ) {
+        var id;
+
+        // var nameCorrect = name.indexOf
+        //remove parts from name e.g. (1 part) or (2 parts)
+        console.log('----------');
+        console.log(name)
+        name = name.replace(/^\([0-9]\s\bpart[s]?\)\s(\w+)/, '$1');
+        console.log(name)
+
+        conn
+            .query('SELECT id FROM ingredients WHERE name LIKE ?', name.trim(), function ( err, result ) {
+                if ( result.length > 0 )
+                {
+                  id = result[0].id;
+                }
+              }).on('end', function () {
+                  if ( !id )
+                  {
+                    //insert the ingredient and update id
+                    conn.query('INSERT INTO ingredients SET ?', {'name': name}, function ( err, result ) {
+                        if ( err )
+                        {
+                          conn.rollback(function() {
+                              throw err;
+                            });
+                        }
+
+                        id = result.insertId;
+                      }).on('end', function () {
+                            console.log( 'insert cocktail to ingredients relation' );
+                            console.log( {'ingredients_id': id, 'cocktail_id': cid} );
+                            insertCocktailIngredientsRelation( conn, {'ingredients_id': id, 'cocktail_id': cid} );
+                        });
+                  }
+                });
+    };
+
+  //Inserts a cocktail, it's ingredients and the nessecary relations between ingredients and the cocktail
+  var insertCocktail = function ( conn, name, description, ingredients ) {
+          var cocktailName = name.indexOf('(cocktail)') > -1 ? name.substr( 0, name.indexOf('(cocktail)') ).trim() : name.trim();
+          var tempCocktail = {'name': cocktailName, 'description': description},
+              id;
+
+          console.log('insertCocktail:');
+        conn
+            .query('SELECT id FROM cocktail WHERE name LIKE ?', name, function ( err, result ) {
+                //if result.length is larger than
+                if ( result.length > 0 )
+                {
+                  id = result[0].id;
+                }
+              }).on('end', function () {
+                    conn.query('INSERT INTO cocktail SET ?', tempCocktail, function (err, result) {
+                        if ( err )
+                        {
+                          conn.rollback(function() {
+                              throw err;
+                            });
+                        }
+
+                        //only set tempCocktail.id if globa id var is not set
+                        //i.e. only set it if the cocktail does not exist
+                        if ( !id )
+                        {
+                          tempCocktail.id = result.insertId;
+                        }
+
+                      }).on('end', function () {
+
+                          //if tempCocktail.id is not set we can update cocktail_ingredients
+                          console.log(tempCocktail);
+                          if ( tempCocktail.id )
+                          {
+                              for (var i = 0; i < ingredients.length; i++)
+                              {
+                                console.log( 'call from insertCocktail to handleIngredients' );
+                                handleIngredients(conn, ingredients[i], tempCocktail.id);
+                              }
+                          }
+                        });
+                });
+    };
+
+  var insertCocktailIngredientsRelation = function ( conn, cirelation ) {
+        delete cirelation.cocktailName;
+
+        conn.query('INSERT INTO cocktail_ingredients SET ?', cirelation, function ( err, result ) {
+            if ( err )
+            {
+              connection.rollback(function() {
+                  throw err;
+                });
+            }
+          });
+  };
+
+
+requestPromise('http://en.wikipedia.org/wiki/List_of_IBA_official_cocktails')
+      .done(function (res) {
+          $ = cheerio.load(res);
+          var lis = $('.multicol li');
+
+          lis
+              .each(function (i, elm) {
+                var li = $(this);
+                  {
+                    scrapePromise('http://en.wikipedia.org' + li.find('a').eq(0).attr('href') )
+                        .done(function (res) {
+                            // var cocktail_ingredients = [];
+                            console.log('scrapePromise:');
+                            console.log(res);
+
+                            insertCocktail( connection, res.name, res.description, res.ingredientNames );
+                      });
+                  }
+                });
+
+        });
+
+
+
