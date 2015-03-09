@@ -17,22 +17,29 @@
           var sLink = links.find('.searchLink');
           var sLinkHref = cLink.attr('href');
           var page = 0;
+          var listofcocktails;
           //fyrir listofcocktails takkann
           cLink
               .on('click', function(e){
                 e.preventDefault();
                 if(!$(this).is('.current'))
                 {
+                  $('.results').empty();
+                  $('.search .fi_btn input').val('Filter');
                   $('.nav .current').removeClass('current');
                   $(this).addClass('current'); 
-                  getCocktails( cLinkHref, '/' + page,true );
+                  getCocktails( cLinkHref, '/' + page,false );
                   page++;
+                  if(listofcocktails)
+                  {
+                    $('.results').prepend(listofcocktails);
+                  }
                   $win.on('scroll', function(){
                     //Skroll fyrir listofcocktails takkann
                     if( $win.scrollTop() == $doc.height() - $win.height() )
                     {
                       getCocktails(cLinkHref, '/' + page,false );
-                       page++;
+                      page++;
                     }
                   });
                 }             
@@ -43,6 +50,11 @@
                 e.preventDefault();
                 if(!$(this).is('.current'))
                 {
+                  if($('.results').contents().length )
+                  {
+                    listofcocktails = $('.results').contents();
+                  }
+                  $('.search .fi_btn input').val('Add');
                   $('.nav .current').removeClass('current');
                   $(this).addClass('current'); 
                   getCocktails( sLinkHref, '/' + page,true );
@@ -71,10 +83,17 @@
 
                   if ( searchInput.val().length )
                   {
-                    tagList.prepend('<li><span>' + searchInput.val() + '</span><a class="removetag" href="#removetag">x</a></li>');
-                    searchInput.val('');
-                    //framkvæma leit);
-                    getCocktails( form.attr('action'), '?' + getTagList(),true );
+                    if( $('.searchLink').is('.current') ) //ef leit er valin
+                    {
+                      tagList.prepend('<li><span>' + searchInput.val() + '</span><a class="removetag" href="#removetag">x</a></li>');
+                      searchInput.val('');
+                      //framkvæma leit);
+                      getCocktails( form.attr('action'), '?' + getTagList(),true );                      
+                    }
+                    else //annars
+                    {
+                      //filtera listann
+                    }
                   }
                   else if ( !tagList.find('li').length )
                   {

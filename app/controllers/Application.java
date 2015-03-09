@@ -1,3 +1,9 @@
+/**
+ * @author: Hópur 7; Kári Yngva, Elsa Mjöll og Rakel Björt
+ * @since: 20.01.15
+ *
+ * Klasinn geymir helstu aðferðir til að .
+ */
 package controllers;
 
 import play.*;

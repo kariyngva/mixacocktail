@@ -1,3 +1,9 @@
+/**
+ * @author: Hópur 7; Kári Yngva, Elsa Mjöll og Rakel Björt
+ * @since: 03.02.15
+ *
+ * Klasinn geymir Cokctail hlut og vistar cocktailhlut í gagnagrunni .
+ */
 package models;
 
 import com.avaje.ebean.*;
@@ -10,9 +16,6 @@ import javax.persistence.*;
 import java.util.List;
 
 
-/**
- * Created by elsamjoll on 2/3/15.
- */
 @Entity
 public class Cocktail extends Model {
     @Id
@@ -25,31 +28,50 @@ public class Cocktail extends Model {
     private List<Ingredients> ingredients;
     private List<Cocktail> cocktail;
 
+    /**
+     * Aðferð:  Bæta nafni við Cocktail hlut
+     * @param name  er það nafn sem passar við kokteil.
+     **/
     public void setName(String name) {
         this.name = name;
     }
-
+    /**
+     * Aðferð: Bæta lýsingu við Cocktail hlut.
+     * @param description er lýsing sem lýsir kokteilnum.
+     **/
     public void setDescription(String description) {
         this.description = description;
     }
-
+    /**
+     * Aðferð: Bætir hráefni við  Ingredients hlut
+     * @param ingredient er hráefni í Ingredients hlutnum.
+     **/
     public void addIngredient(Ingredients ingredient) {
         ingredients.add(ingredient);
     }
-
+    /**
+     * Aðferð: Nær í hráefni úr Ingredient lista .
+     * @return: Skilar lista af hráefnum úr Ingredients hlut.
+     **/
     public List<Ingredients> getIngredients() {
         return this.ingredients;
     }
-
+    /**
+     * Aðferð: Leitar af Cocktail í cokctail klasa.
+     * @param Cocktail af taginu String
+     **/
     public static Finder<String,Cocktail> find = new Finder<String,Cocktail>(
             String.class, Cocktail.class
     );
-
+    /**
+     * Aðferð: Nær í lista af öllum kokteilum sem eru inni í gagnagrunni.
+     * @return: Skilar lista af kokteilum sem paging list 2 í einu.
+     **/
     public static List<Cocktail> getAllCocktails(int p){
         PagingList<Cocktail> pagingList =
                 Ebean.find(Cocktail.class)
-                        //skilar bara einni nidurstodu per page
-                        .findPagingList(1);
+                        //skilar bara tveimur nidurstodu per page
+                        .findPagingList(2);
         Page<Cocktail> page = pagingList.getPage(p);
         List<Cocktail> list = page.getList();
         return list;
