@@ -9,7 +9,10 @@
   // =========================================================================================================================
   //   Actions
   // =========================================================================================================================
-
+    /**
+     * Aðferð: Bindur atburði við hlekki valmyndar og framkvæmir leitir
+     *
+     **/
   var prepNav = function(){
           var links = $('.nav');
           var cLink = links.find('.list');
@@ -18,9 +21,9 @@
           var sLinkHref = cLink.attr('href');
           var page = 0;
           var listofcocktails;
-          //fyrir listofcocktails takkann, athugum hvort hann sé current 
-          //náum í lista af kokteilum, og load-ast meiri kokteilar þegar 
-          //komið er að neðsta part síðunar.
+          //fyrir listofcocktails takkann, athugum hvort hann sé með klasann current 
+          //ákveðið margar kokteil niðurstöður birtast, load-ast meiri kokteilar
+          //þegar scrollað er á neðsta part síðunar.
           cLink
               .on('click', function(e){
                 e.preventDefault();
@@ -47,7 +50,7 @@
                   });
                 }             
               });
-          //fyrir search takkann
+          //fyrir Search takkann, athugum hvort hann sé með klasann current 
           sLink
               .on('click', function(e){
                 e.preventDefault();
@@ -74,7 +77,10 @@
               });
 
   };
-
+    /**
+     * Aðferð: Bindir atburði við leitar form, tekur streng úr leitarformi og setur í hráefna-lista
+     *         Framkvæmir leit út frá hráefnalista
+     **/
   var prepSearch = function () {
           var form = $('.search form'),
               searchInput = form.find('.fi_txt input'),
@@ -122,7 +128,11 @@
 
                 });
     };
-
+ /**
+  * Aðferð: Breytir hráefnalista í streng þar sem hráefnin eru aðskilin með bandstriki
+  *
+  * @return: Skilar streng af hráefnum.
+  **/
   var getTagList = function () {
           var tagList = $('.tags ul'),
               tagString = "";
@@ -137,7 +147,10 @@
 
           return tagString;
     };
-
+ /**
+  * Aðferð: Sækir kokteila á JSON formi og setur þá inn í .results
+  *
+  **/
   var getCocktails = function ( url, queryString, empty ) {
           if ( queryString.length )
           {
@@ -154,9 +167,13 @@
                 });
           }
     }
-
+ /**
+  * Aðferð: Tekur inn fylki af kokteilum á JSON formi
+  *
+  * @return: Skilar Markup fyrir hvern kokteil í fylkinu
+  **/
   var generateMarkup = function( data ) {
-          //[{"id":"1","name":"Mojito","description":"Desc here","ingredients":[{"id":"1","name":"Rum"},{"id":"9","name":"Sugar"}]},{"id":"4","name":"Strawberry Daquiri","description":"Desc here","ingredients":[{"id":"1","name":"Rum"},{"id":"7","name":"Strawberries"}]}]
+    
           var results = $('<div class="rescontainer"></div>');
           for (var i = 0; i < data.length; i++) {
               var cjson = data[i],
