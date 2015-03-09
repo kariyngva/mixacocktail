@@ -2,7 +2,7 @@
  * @author: Hópur 7; Kári Yngva, Elsa Mjöll og Rakel Björt
  * @since: 03.02.15
  *
- * Klasinn geymir Cokctail hlut og vistar cocktailhlut í gagnagrunni .
+ * Klasinn geymir Cokctail hlut sem erfir frá Model.
  */
 package models;
 
@@ -28,44 +28,60 @@ public class Cocktail extends Model {
     private List<Ingredients> ingredients;
     private List<Cocktail> cocktail;
 
+    //@ManyToOne(cascade = CascadeType.ALL)
+    //private List<Double> amount;
+    //public void setAmount(Double amount) {this.amount.add(amount);}
+    //public List<Double> getAmount(){return this.amount;}
+
     /**
-     * Aðferð:  Bæta nafni við Cocktail hlut
-     * @param name  er það nafn sem passar við kokteil.
+     * Aðferð: Bæta nafni við Cocktail hlut
+     * @param name  er nafn kokteils.
      **/
     public void setName(String name) {
         this.name = name;
     }
+
     /**
      * Aðferð: Bæta lýsingu við Cocktail hlut.
+     *
      * @param description er lýsing sem lýsir kokteilnum.
      **/
     public void setDescription(String description) {
         this.description = description;
     }
+
     /**
      * Aðferð: Bætir hráefni við  Ingredients hlut
-     * @param ingredient er hráefni í Ingredients hlutnum.
+     *
+     * @param ingredient er hráefni í Ingredients hlut.
      **/
     public void addIngredient(Ingredients ingredient) {
         ingredients.add(ingredient);
     }
+
     /**
      * Aðferð: Nær í hráefni úr Ingredient lista .
-     * @return: Skilar lista af hráefnum úr Ingredients hlut.
+     *
+     * @return: Skilar lista af hráefnum úr Ingredients lista.
      **/
     public List<Ingredients> getIngredients() {
         return this.ingredients;
     }
+
     /**
-     * Aðferð: Leitar af Cocktail í cokctail klasa.
-     * @param Cocktail af taginu String
+     * Aðferð: Leitar af Cocktail af taginu String í cokctail klasa.
+     *
+     * @param Cocktail er af taginu String.
      **/
     public static Finder<String,Cocktail> find = new Finder<String,Cocktail>(
             String.class, Cocktail.class
     );
+
     /**
-     * Aðferð: Nær í lista af öllum kokteilum sem eru inni í gagnagrunni.
-     * @return: Skilar lista af kokteilum sem paging list 2 í einu.
+     * Aðferð: Nær í lista af öllum kokteilum sem eru inni í gagnagrunni og skilar sem paging list með
+     *         tvo kokteila per síðu.
+     *
+     * @return: Skilar lista af kokteilum sem paging list.
      **/
     public static List<Cocktail> getAllCocktails(int p){
         PagingList<Cocktail> pagingList =
@@ -77,12 +93,20 @@ public class Cocktail extends Model {
         return list;
     };
 
-
+    /**
+     * Aðferð: Leitar í öllum kokteilum eftir ákveðnu hráefni.
+     *
+     * @return: Skilar lista af kokteilum sem inniheldur það hráefni sem leitað var að.
+     **/
     public static List<Cocktail> searchByIngredient(Ingredients ingredient){
         return find.where().in("ingredients", ingredient).findList();
-        //return find.where().ieq("name", name).findList();
     }
 
+    /**
+     * Aðferð: Fyrirspurning okkar á gagnagrunninn, tekur alla kokteila og leitar eftir innsláðu hráefni.
+     *
+     * @return: Skilar lista af kokteilum sem innihalda það hráefni sem leitað var að.
+     **/
     public static List<Cocktail> searchByIngredients(List<Ingredients> ingredients) {
         String ingredientIds = "";
 

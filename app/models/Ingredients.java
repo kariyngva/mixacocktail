@@ -1,3 +1,9 @@
+/**
+ * @author: Hópur 7; Kári Yngva, Elsa Mjöll og Rakel Björt
+ * @since: 03.02.15
+ *
+ * Klasinn geymir Ingredients hlut sem erfir frá Model.
+ */
 package models;
 
 import play.Logger;
@@ -9,12 +15,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * Created by kari on 03/02/15.
- */
 @Entity
 public class Ingredients extends Model {
- //   @ManyToMany(cascade = CascadeType.PERSIST)
+
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -23,18 +26,38 @@ public class Ingredients extends Model {
     @Constraints.Required
     public String name;
 
+    /**
+     * Aðferð: Bæta nafni við Ingredients hlut
+     *
+     * @param name  er nafn hráefnis.
+     **/
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Aðferð: Leitar af Ingredients af taginu Long í Ingredients klasa.
+     *
+     * @param Ingredients er af taginu Long.
+     **/
     public static Finder<Long,Ingredients> find = new Finder<Long,Ingredients>(
             Long.class, Ingredients.class
     );
 
+    /**
+     * Aðferð: Leitar í Ingredients lista eftir innslegnu nafni hráefnis.
+     *
+     * @return: Skilar lista af hráefni sem inniheldur það nafn sem leitað var að.
+     **/
     public static List<Ingredients> searchByName(String name){
         return find.where().ieq("name", name).findList();
     }
 
+    /**
+     * Aðferð: Leitar í Ingredients lista eftir mörgun innslegnum nafni hráefnum.
+     *
+     * @return: Skilar fylki af hráefnum sem innihalda þau nöfn sem leitað var að.
+     **/
     public static List<Ingredients> searchByNames(String[] names) {
         ArrayList<Ingredients> results = new ArrayList<Ingredients>();
         for ( String name : names ) {

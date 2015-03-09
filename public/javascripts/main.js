@@ -18,10 +18,13 @@
           var sLinkHref = cLink.attr('href');
           var page = 0;
           var listofcocktails;
-          //fyrir listofcocktails takkann
+          //fyrir listofcocktails takkann, athugum hvort hann sé current 
+          //náum í lista af kokteilum, og load-ast meiri kokteilar þegar 
+          //komið er að neðsta part síðunar.
           cLink
               .on('click', function(e){
                 e.preventDefault();
+
                 if(!$(this).is('.current'))
                 {
                   $('.results').empty();

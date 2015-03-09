@@ -5,6 +5,7 @@
  * Klasinn inniheldur Global breytur sem notaðar voru þegar við vorum að prófa leitina.
  * Tilgangur var að sleppa við að setja gögnin inn manually.
  */
+
 import models.Cocktail;
 import models.Ingredients;
 import play.*;
@@ -16,7 +17,7 @@ public class Global extends GlobalSettings {
 
         Logger.info("Application has started");
 
-        if ( Ingredients.searchByName("Rum").isEmpty() ) {
+        //if ( Ingredients.searchByName("Rum").isEmpty() ) {
             String[] ingredients = {"Rum", "Vodka", "Tequila", "Gin", "Passoa", "Coke", "Strawberries", "Tonic", "Sugar"};
 
             for (String a : ingredients ) {
@@ -34,6 +35,9 @@ public class Global extends GlobalSettings {
                 if (c.equals("Mojito")) {
                     cocktail.addIngredient(Ingredients.searchByName("Rum").get(0));
                     cocktail.addIngredient(Ingredients.searchByName("Sugar").get(0));
+                    Logger.info("eg er her");
+                   // cocktail.setAmount(4.0);
+                   //cocktail.setAmount(2.0);
                     cocktail.setDescription("Mojito is a traditional Cuban highball. Traditionally, a mojito is a cocktail that consists of five ingredients: white rum, sugar, lime juice, sparkling water, and mint.");
 
                 } else if (c.equals("Cuba libre")) {
@@ -54,6 +58,6 @@ public class Global extends GlobalSettings {
 
                 cocktail.save();
             }
-        }
+        //}
     }
 }
