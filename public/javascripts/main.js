@@ -9,25 +9,78 @@
   // =========================================================================================================================
   //   Actions
   // =========================================================================================================================
-
+    /**
+     * Aðferð: Bindur atburði við hlekki valmyndar og framkvæmir leitir
+     *
+     **/
   var prepNav = function(){
           var links = $('.nav');
+          var cLink = links.find('.list');
+          var cLinkHref = cLink.attr('href');
           var sLink = links.find('.searchLink');
-          var sLinkHref = sLink.attr('href');
+          var sLinkHref = cLink.attr('href');
           var page = 0;
-          console.log(sLink);
+          var listofcocktails;
+          //fyrir listofcocktails takkann, athugum hvort hann sé með klasann current 
+          //ákveðið margar kokteil niðurstöður birtast, load-ast meiri kokteilar
+          //þegar scrollað er á neðsta part síðunar.
+          cLink
+              .on('click', function(e){
+                e.preventDefault();
 
+                if(!$(this).is('.current'))
+                {
+                  $('.results').empty();
+                  $('.search .fi_btn input').val('Filter');
+                  $('.nav .current').removeClass('current');
+                  $(this).addClass('current'); 
+                  getCocktails( cLinkHref, '/' + page,false );
+                  page++;
+                  if(listofcocktails)
+                  {
+                    $('.results').prepend(listofcocktails);
+                  }
+                  $win.on('scroll', function(){
+                    //Skroll fyrir listofcocktails takkann
+                    if( $win.scrollTop() == $doc.height() - $win.height() )
+                    {
+                      getCocktails(cLinkHref, '/' + page,false );
+                      page++;
+                    }
+                  });
+                }             
+              });
+          //fyrir Search takkann, athugum hvort hann sé með klasann current 
           sLink
               .on('click', function(e){
-                  e.preventDefault();
-                  console.log('eoooo');
-                  getCocktails( sLinkHref, '/' + page );
+                e.preventDefault();
+                if(!$(this).is('.current'))
+                {
+                  if($('.results').contents().length )
+                  {
+                    listofcocktails = $('.results').contents();
+                  }
+                  $('.search .fi_btn input').val('Add');
+                  $('.nav .current').removeClass('current');
+                  $(this).addClass('current'); 
+                  getCocktails( sLinkHref, '/' + page,true );
                   page++;
+                  //Skroll fyrir search takkann
+                  $win.on('scroll', function(){
+                    if( $win.scrollTop() == $doc.height() - $win.height() )
+                    {
+                      //getCocktails(sLinkHref, '/' + page,false );
+                      //page++;
+                    }
+                  });
+                }
               });
 
-
   };
-
+    /**
+     * Aðferð: Bindir atburði við leitar form, tekur streng úr leitarformi og setur í hráefna-lista
+     *         Framkvæmir leit út frá hráefnalista
+     **/
   var prepSearch = function () {
           var form = $('.search form'),
               searchInput = form.find('.fi_txt input'),
@@ -39,10 +92,17 @@
 
                   if ( searchInput.val().length )
                   {
-                    tagList.prepend('<li><span>' + searchInput.val() + '</span><a class="removetag" href="#removetag">x</a></li>');
-                    searchInput.val('');
-                    //framkvæma leit);
-                    getCocktails( form.attr('action'), '?' + getTagList() );
+                    if( $('.searchLink').is('.current') ) //ef leit er valin
+                    {
+                      tagList.prepend('<li><span>' + searchInput.val() + '</span><a class="removetag" href="#removetag">x</a></li>');
+                      searchInput.val('');
+                      //framkvæma leit);
+                      getCocktails( form.attr('action'), '?' + getTagList(),true );                      
+                    }
+                    else //annars
+                    {
+                      //filtera listann
+                    }
                   }
                   else if ( !tagList.find('li').length )
                   {
@@ -64,11 +124,15 @@
                     $('.results').empty();
                   }
 
-                  getCocktails( form.attr('action'), '?' + getTagList() );
+                  getCocktails( form.attr('action'), '?' + getTagList(),true );
 
                 });
     };
-
+ /**
+  * Aðferð: Breytir hráefnalista í streng þar sem hráefnin eru aðskilin með bandstriki
+  *
+  * @return: Skilar streng af hráefnum.
+  **/
   var getTagList = function () {
           var tagList = $('.tags ul'),
               tagString = "";
@@ -83,8 +147,11 @@
 
           return tagString;
     };
-
-  var getCocktails = function ( url, queryString ) {
+ /**
+  * Aðferð: Sækir kokteila á JSON formi og setur þá inn í .results
+  *
+  **/
+  var getCocktails = function ( url, queryString, empty ) {
           if ( queryString.length )
           {
             $html.addClass('ajax-wait');
@@ -92,7 +159,7 @@
                   url +  queryString
                 )
               .done(function(data) {
-                  $('.results').empty();
+                  empty && $('.results').empty();
                   $('.results').append( generateMarkup(data) );
                 })
               .always(function() {
@@ -100,9 +167,13 @@
                 });
           }
     }
-
+ /**
+  * Aðferð: Tekur inn fylki af kokteilum á JSON formi
+  *
+  * @return: Skilar Markup fyrir hvern kokteil í fylkinu
+  **/
   var generateMarkup = function( data ) {
-          //[{"id":"1","name":"Mojito","description":"Desc here","ingredients":[{"id":"1","name":"Rum"},{"id":"9","name":"Sugar"}]},{"id":"4","name":"Strawberry Daquiri","description":"Desc here","ingredients":[{"id":"1","name":"Rum"},{"id":"7","name":"Strawberries"}]}]
+    
           var results = $('<div class="rescontainer"></div>');
           for (var i = 0; i < data.length; i++) {
               var cjson = data[i],

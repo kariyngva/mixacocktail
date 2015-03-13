@@ -163,3 +163,30 @@ header,
   list-style: none;
   padding-left: 1em;
 }
+
+.nav ul{
+  list-style: none;
+  text-align: center;
+  font-size: 24px;
+  line-height: 30px;
+}
+
+.nav li{
+  display:inline-block;
+}
+
+.nav li a{
+  text-decoration: none;
+  color: #000;
+}
+
+.nav .current {
+  background-color: #f96272;
+  color: #fff;
+  border-radius: 5px;
+  border: 0;
+  font-size: 24px;
+  line-height: 35px;
+  padding: 7px 16px;
+  padding: 6px 15px 6px 16px;
+}

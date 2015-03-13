@@ -1,3 +1,9 @@
+/**
+ * @author: Hópur 7; Kári Yngva, Elsa Mjöll og Rakel Björt
+ * @since: 03.02.15
+ *
+ * Klasinn geymir Cokctail hlut sem erfir frá Model.
+ */
 package models;
 
 import com.avaje.ebean.*;
@@ -10,9 +16,6 @@ import javax.persistence.*;
 import java.util.List;
 
 
-/**
- * Created by elsamjoll on 2/3/15.
- */
 @Entity
 public class Cocktail extends Model {
     @Id
@@ -25,44 +28,90 @@ public class Cocktail extends Model {
     private List<Ingredients> ingredients;
     private List<Cocktail> cocktail;
 
+    //@ManyToOne(cascade = CascadeType.ALL)
+    //private List<Double> amount;
+    //public void setAmount(Double amount) {this.amount.add(amount);}
+    //public List<Double> getAmount(){return this.amount;}
+
+    /**
+     * Aðferð: Bæta nafni við Cocktail hlut
+     * @param name  er nafn kokteils.
+     **/
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Aðferð: Bæta lýsingu við Cocktail hlut.
+     *
+     * @param description er lýsing sem lýsir kokteilnum.
+     **/
     public void setDescription(String description) {
         this.description = description;
     }
 
+    /**
+     * Aðferð: Bætir hráefni við Ingredients lista
+     *
+     * @param ingredient er hráefni í Ingredients lista.
+     **/
     public void addIngredient(Ingredients ingredient) {
         ingredients.add(ingredient);
     }
 
+    /**
+     * Aðferð: Nær í hráefni úr Ingredient lista.
+     *
+     * @return: Skilar lista af hráefnum úr Ingredients lista.
+     **/
     public List<Ingredients> getIngredients() {
         return this.ingredients;
     }
 
-    public static Finder<String,Cocktail> find = new Finder<String,Cocktail>(
-            String.class, Cocktail.class
+    /**
+     * Aðferð: Finder er leitar hlutur fyrir Cocktail með ID af taginu Long.
+     *
+     * @param Cocktail  er hluturinn sem leitarinn er fyrir og Long er
+     *                 tagið sem auðkenni hlutarins er af.
+     **/
+    public static Finder<Long,Cocktail> find = new Finder<Long,Cocktail>(
+            Long.class, Cocktail.class
     );
 
+    /**
+     * Aðferð: Nær í lista af öllum kokteilum sem eru inni í gagnagrunni og skilar sem paging list með
+     *         tvo kokteila per síðu.
+     *
+     * @return: Skilar lista af kokteilum sem paging list.
+     **/
     public static List<Cocktail> getAllCocktails(int p){
         PagingList<Cocktail> pagingList =
                 Ebean.find(Cocktail.class)
-                        .findPagingList(10);
+                        //skilar bara tveimur nidurstodu per page
+                        .findPagingList(2);
         Page<Cocktail> page = pagingList.getPage(p);
         List<Cocktail> list = page.getList();
         return list;
     };
 
-
+    /**
+     * Aðferð: Leitar í öllum kokteilum eftir ákveðnu hráefni.
+     *
+     * @return: Skilar lista af kokteilum sem inniheldur það hráefni sem leitað var að.
+     **/
     public static List<Cocktail> searchByIngredient(Ingredients ingredient){
         return find.where().in("ingredients", ingredient).findList();
-        //return find.where().ieq("name", name).findList();
     }
 
+    /**
+     * Aðferð: Fyrirspurning okkar á gagnagrunninn, tekur alla kokteila og leitar eftir innslegnu hráefni.
+     *
+     * @return: Skilar lista af kokteilum sem innihalda eitthvert þeirra hráefna sem leitað var að.
+     **/
     public static List<Cocktail> searchByIngredients(List<Ingredients> ingredients) {
         String ingredientIds = "";
 
+        //Byggum upp SQL með því að bæta id hvers hráefnis í strenginn ingredientIds.
         for( Ingredients ingr : ingredients ){
             if ( ingredients.indexOf( ingr ) == 0 )
             {
@@ -74,6 +123,7 @@ public class Cocktail extends Model {
             }
         }
 
+        //Búum til SQL fyrirspurn sem skilar okkur kokteilum, ásamt hversu mörg hráefni passa og hversu mörg vantar.
         String sql = "select id, name, description from " +
                 "(select " +
                 "count(ingredients_id) as matching_ingredients, " +
