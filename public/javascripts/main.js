@@ -3,7 +3,8 @@
       $html = $( 'html' ),
       $win =  $( window ),
       $body = $( 'body' ),
-      $doc = $( document );
+      $doc = $( document ),
+      canSubmit = false;
 
 
   // =========================================================================================================================
@@ -32,15 +33,16 @@
                 {
                   $('.results').empty();
                   $('.search .fi_btn input').val('Filter');
+                  $('body').addClass('listActive');
                   $('.nav .current').removeClass('current');
-                  $(this).addClass('current'); 
+                  $(this).addClass('current');
                   getCocktails( cLinkHref, '/' + page,false );
                   page++;
                   if(listofcocktails)
                   {
                     $('.results').prepend(listofcocktails);
                   }
-                  $win.on('scroll', function(){
+                  $win.on('scroll.bottom', function(){
                     //Skroll fyrir listofcocktails takkann
                     if( $win.scrollTop() == $doc.height() - $win.height() )
                     {
@@ -60,19 +62,12 @@
                   {
                     listofcocktails = $('.results').contents();
                   }
+                  $('body').removeClass('listActive');
                   $('.search .fi_btn input').val('Add');
                   $('.nav .current').removeClass('current');
-                  $(this).addClass('current'); 
-                  getCocktails( sLinkHref, '/' + page,true );
-                  page++;
+                  $(this).addClass('current');
                   //Skroll fyrir search takkann
-                  $win.on('scroll', function(){
-                    if( $win.scrollTop() == $doc.height() - $win.height() )
-                    {
-                      //getCocktails(sLinkHref, '/' + page,false );
-                      //page++;
-                    }
-                  });
+                  $win.off('scroll.bottom');note
                 }
               });
 
@@ -86,18 +81,61 @@
               searchInput = form.find('.fi_txt input'),
               tagList = $('.tags ul');
 
+    var availableTags = [
+      "Rum",
+      "Vodka",
+      "Tequila",
+      "Gin",
+      "Passoa",
+      "Coke",
+      "Strawberries",
+      "Tonic",
+      "Sugar"
+    ];
+    searchInput.autocomplete({
+      source: availableTags,
+
+      change: function (event, ui) {
+          console.log('change');
+          if(ui.item)
+          {
+            canSubmit = true;
+          }
+          else
+          {
+            canSubmit = false;
+          }
+      
+        },
+      select : function(event, ui) {
+        console.log('selected');
+        canSubmit = true;
+        form.trigger('submit');
+        return false;
+      }
+
+    });
+
           form
               .on('submit', function (e) {
                   e.preventDefault();
 
+                  //$(this).data('ui-autocomplete')._trigger('select', 'autocompleteselect', {item:{value:$(this).val()}});
+                  //$("#search").trigger("autocompleteselect"); 
+                  //$('#search').autocomplete( "instance" ).selectedItem;
+                  // console.log(selected);
+
                   if ( searchInput.val().length )
                   {
-                    if( $('.searchLink').is('.current') ) //ef leit er valin
+                    if( $('.searchLink').is('.current')) //ef leit er valin
                     {
                       tagList.prepend('<li><span>' + searchInput.val() + '</span><a class="removetag" href="#removetag">x</a></li>');
                       searchInput.val('');
-                      //framkvæma leit);
-                      getCocktails( form.attr('action'), '?' + getTagList(),true );                      
+                      //framkvæma leit
+                      getCocktails( form.attr('action'), '?' + getTagList(), true );                       
+
+                      // $( "#search" ).on( "autocompletechange", function( event, ui ) {
+                      // } );                     
                     }
                     else //annars
                     {

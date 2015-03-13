@@ -132,6 +132,9 @@ header,
 }
 .tags {}
 
+.listActive .tags{
+  display: none;
+}
 
 
 
