@@ -9,10 +9,27 @@
 import models.Cocktail;
 import models.Ingredients;
 import play.*;
+import securesocial.core.RuntimeEnvironment;
+import service.MyEnvironment;
+import play.GlobalSettings;
 
 import java.util.List;
 
 public class Global extends GlobalSettings {
+    private RuntimeEnvironment env = new MyEnvironment();
+
+    @Override
+    public <A> A getControllerInstance(Class<A> controllerClass) throws Exception {
+        A result;
+
+        try {
+            result = controllerClass.getDeclaredConstructor(RuntimeEnvironment.class).newInstance(env);
+        } catch (NoSuchMethodException e) {
+            // the controller does not receive a RuntimeEnvironment, delegate creation to base class.
+            result = super.getControllerInstance(controllerClass);
+        }
+        return result;
+    }
     public void onStart(Application app) {
 
         Logger.info("Application has started");
