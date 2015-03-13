@@ -36,24 +36,20 @@ public class Application extends Controller {
         return ok(index.render("Your new application is ready.", 10));
 
     }
-    /**
-     * Aðferð: Býr til nýjan kokteil hlut, fyrir hvert hráefni innslegið þá ítrum við í gegnum lista
-     *         af ingredients og athugum hvort inslegna hráefnið sé til staðar í ilist.
-     *         Ef ekkert hráefni finnst þá búum við til nýjan Ingredients hlut ingToAdd.
-     *
-     * @return: Skilar /Cocktails síðu sem nær í alla þá kokteila og hráefni sem eru inni í gagnagrunni.
-     **/
+
     public static Result addCocktail() {
         Cocktail cocktail = new Cocktail();
         Map<String, String[]> map = request().body().asFormUrlEncoded();
         String[] ingredients = map.get("ingredient");
         String[] cname = map.get("name");
 
+        // Loop for each checked question
         for (String t : ingredients) {
             List<Ingredients> ilist = Ingredients.searchByName(t);
 
             if (ilist.size() > 0) {
                 cocktail.addIngredient(ilist.get(0));
+                Logger.info("Hráefni til");
             }
             else if (t.equals("")){
                 //Ef ekkert hraefni er slegid inn, viljum ekki tomann streng i nidurstodur
@@ -62,6 +58,7 @@ public class Application extends Controller {
                 Ingredients ingToAdd = new Ingredients();
                 ingToAdd.setName(t);
                 cocktail.addIngredient(ingToAdd);
+                Logger.info("Hráefni ekki til");
             }
         }
 
