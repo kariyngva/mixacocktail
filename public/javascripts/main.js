@@ -22,7 +22,7 @@
           var sLinkHref = cLink.attr('href');
           var page = 0;
           var listofcocktails;
-          //fyrir listofcocktails takkann, athugum hvort hann sé með klasann current 
+          //fyrir listofcocktails takkann, athugum hvort hann sé með klasann current
           //ákveðið margar kokteil niðurstöður birtast, load-ast meiri kokteilar
           //þegar scrollað er á neðsta part síðunar.
           cLink
@@ -50,9 +50,9 @@
                       page++;
                     }
                   });
-                }             
+                }
               });
-          //fyrir Search takkann, athugum hvort hann sé með klasann current 
+          //fyrir Search takkann, athugum hvort hann sé með klasann current
           sLink
               .on('click', function(e){
                 e.preventDefault();
@@ -67,7 +67,7 @@
                   $('.nav .current').removeClass('current');
                   $(this).addClass('current');
                   //Skroll fyrir search takkann
-                  $win.off('scroll.bottom');note
+                  $win.off('scroll.bottom');
                 }
               });
 
@@ -94,7 +94,7 @@
     ];
     searchInput.autocomplete({
       source: availableTags,
-
+      autoFocus: true,
       change: function (event, ui) {
           console.log('change');
           if(ui.item)
@@ -105,12 +105,15 @@
           {
             canSubmit = false;
           }
-      
+
         },
       select : function(event, ui) {
-        console.log('selected');
-        canSubmit = true;
-        form.trigger('submit');
+          if( $('.searchLink').is('.current')) //ef leit er valin
+          {
+            tagList.prepend('<li><span>' + ui.item.value + '</span><a class="removetag" href="#removetag">x</a></li>');
+            searchInput.val('');
+            getCocktails( form.attr('action'), '?' + getTagList(), true );
+          }
         return false;
       }
 
@@ -119,23 +122,12 @@
           form
               .on('submit', function (e) {
                   e.preventDefault();
-
-                  //$(this).data('ui-autocomplete')._trigger('select', 'autocompleteselect', {item:{value:$(this).val()}});
-                  //$("#search").trigger("autocompleteselect"); 
-                  //$('#search').autocomplete( "instance" ).selectedItem;
-                  // console.log(selected);
-
                   if ( searchInput.val().length )
                   {
                     if( $('.searchLink').is('.current')) //ef leit er valin
                     {
-                      tagList.prepend('<li><span>' + searchInput.val() + '</span><a class="removetag" href="#removetag">x</a></li>');
-                      searchInput.val('');
-                      //framkvæma leit
-                      getCocktails( form.attr('action'), '?' + getTagList(), true );                       
-
                       // $( "#search" ).on( "autocompletechange", function( event, ui ) {
-                      // } );                     
+                      // } );
                     }
                     else //annars
                     {
@@ -211,7 +203,7 @@
   * @return: Skilar Markup fyrir hvern kokteil í fylkinu
   **/
   var generateMarkup = function( data ) {
-    
+
           var results = $('<div class="rescontainer"></div>');
           for (var i = 0; i < data.length; i++) {
               var cjson = data[i],
