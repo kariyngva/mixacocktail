@@ -34,7 +34,7 @@ public class Global extends GlobalSettings {
 
         Logger.info("Application has started");
 
-        //if ( Ingredients.searchByName("Rum").isEmpty() ) {
+        if ( Ingredients.searchByName("Rum").isEmpty() ) {
             String[] ingredients = {"Rum", "Vodka", "Tequila", "Gin", "Passoa", "Coke", "Strawberries", "Tonic", "Sugar"};
 
             for (String a : ingredients ) {
@@ -75,6 +75,6 @@ public class Global extends GlobalSettings {
 
                 cocktail.save();
             }
-        //}
+        }
     }
 }

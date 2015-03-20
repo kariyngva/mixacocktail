@@ -56,9 +56,10 @@
           sLink
               .on('click', function(e){
                 e.preventDefault();
+
                 if(!$(this).is('.current'))
                 {
-                  if($('.results').contents().length )
+                  if( $('.results').contents().length )
                   {
                     listofcocktails = $('.results').contents();
                   }
@@ -66,8 +67,10 @@
                   $('.search .fi_btn input').val('Add');
                   $('.nav .current').removeClass('current');
                   $(this).addClass('current');
+                  getCocktails( '/findCocktailByIngredient', '?' + getTagList(), true );
                   //Skroll fyrir search takkann
                   $win.off('scroll.bottom');
+
                 }
               });
 
