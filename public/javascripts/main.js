@@ -93,8 +93,29 @@
       "Sugar"
     ];
     searchInput.autocomplete({
-      source: availableTags,
+
+      source: function(request, response){
+
+
+        $.ajax({
+          url: '/getIngredients/' + request.term,
+          dataType: "json",
+          data:request.term,
+
+
+          success: function( data ) {
+            var results = [];
+            for (var i = 0; i < data.length; i++) {
+              delete data[i].id;
+              results.push(data[i].name);
+            };
+            response( results );
+          }
+        });
+      },  
       autoFocus: true,
+      minLength:3,
+
       change: function (event, ui) {
           console.log('change');
           if(ui.item)
