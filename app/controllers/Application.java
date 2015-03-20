@@ -13,6 +13,8 @@ import play.db.ebean.Model;
 import play.mvc.*;
 import securesocial.core.java.SecuredAction;
 import views.html.*;
+
+import java.lang.reflect.Array;
 import java.util.List;
 import java.util.Map;
 
@@ -97,6 +99,15 @@ public class Application extends Controller {
         String[] parameters = request().uri().split("\\?")[1].split("-");
         List<Cocktail> results = Cocktail.searchByIngredients( Ingredients.searchByNames(parameters) );
         return ok( toJson(results) );
+    }
+
+    public static Result getIngredients(String ing) {
+        String s = new String (ing);
+        if (s.length() > 2 ) {
+            return ok( toJson(Ingredients.getIngredients(s)) );
+        } else {
+            return ok(toJson(ok()) );
+        }
     }
 
     @SecuredAction(authorization = WithProvider.class, params = {"facebook"})

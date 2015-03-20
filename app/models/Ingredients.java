@@ -6,11 +6,15 @@
  */
 package models;
 
+import com.avaje.ebean.Ebean;
+import com.avaje.ebean.Page;
+import com.avaje.ebean.PagingList;
 import play.Logger;
 import play.data.validation.Constraints;
 import play.db.ebean.Model;
 
 import javax.persistence.*;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -65,5 +69,9 @@ public class Ingredients extends Model {
             results.add( find.where().ieq("name", name).findUnique() );
         }
         return results;
+    }
+
+    public static List<Ingredients> getIngredients(String ing) {
+        return find.where().ilike("name", "%" + ing + "%").findList();
     }
 }
