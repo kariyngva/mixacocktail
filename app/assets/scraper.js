@@ -40,8 +40,20 @@ var scrapePromise = function (url) {
                     $ = cheerio.load(data); //cheerio virkar soldið eins "window" object í browser
                     var cocktail;
                     var ingredientNames = [],
-                        ingredientAmount = [];
+                        ingredientAmount = [],
+                        prepElm = $('table th'),
+                        preparation = "",
+                        imgUrl = $('td .image img').not('.metadata img, .floatright img').length ? 'http:' + $('td .image img').not('.metadata img, .floatright img').attr('src') : '';
 
+                    prepElm
+                        .each(function () {
+                            var elm = $(this);
+
+                            if ( elm.text().toLowerCase() == 'preparation' )
+                            {
+                              preparation = elm.next().text();
+                            }
+                          });
 
                     //grf. að allar einingar séu í "cl"
                     $('td.ingredient ul li')
@@ -57,9 +69,11 @@ var scrapePromise = function (url) {
 
                     //Útbúm kokteil hlut út frá efni síðunnar
                     cocktail = {'name': $('#firstHeading').text().trim(),
-                                      'description': $('p').not('table p').eq(0).text(), // this is hopefully the description.
-                                      'ingredientNames' : ingredientNames,
-                                      'ingredientAmount' : ingredientAmount
+                                      'description'       : $('p').not('table p').eq(0).text(), // this is hopefully the description.
+                                      'ingredientNames'   : ingredientNames,
+                                      'ingredientAmount'  : ingredientAmount,
+                                      'image_url'         : imgUrl,
+                                      'preparation'       : preparation
                                     };
 
                     //Ef cocktail er ekki undefined getum við uppfyllt (resolve) loforðið.
@@ -143,9 +157,14 @@ var handleIngredients = function ( conn, name, cid ) {
  * conn er tenging við gagnagrunn, name er nafn kokteils, description er lýsing kokteils
  * og ingredients er fylki af hráefnum kokteils.
  **/
-var insertCocktail = function ( conn, name, description, ingredients ) {
+var insertCocktail = function ( conn, name, description, ingredients, image_url, preparation ) {
         var cocktailName = name.indexOf('(cocktail)') > -1 ? name.substr( 0, name.indexOf('(cocktail)') ).trim() : name.trim();
-        var tempCocktail = {'name': cocktailName, 'description': description},
+        var tempCocktail = {
+                            'name': cocktailName,
+                            'description': description,
+                            'image_url': image_url,
+                            'preparation': preparation
+                          },
             id;
 
       conn
@@ -276,13 +295,30 @@ var linkArray = ['http://en.wikipedia.org/wiki/Alexander_(cocktail)',
 
 
 //Mix til þess að setja gögn í grunninn okkar
-//usage: node scraper.js i, þar sem i vísar á stak í linkArray, i...linkArray.length - 1
-var index = parseInt( process.argv[2] );
-scrapePromise( linkArray[index] )
-    .then(function (res) {
-        //þegar srapePromise er uppfyllt setjum við upplýsingarnar í gagnagrunn
-        insertCocktail( connection, res.name, res.description, res.ingredientNames );
-  });
+//usage: node scraper.js
+var index = 0;
+
+//Þetta interval er hakk til þess að leyfa SQL aðgerðum að keyra "one by one" en
+//ekki (mögulega) mörgum í einu. Fallegri leið væri að nota einhversskonar biðröð.
+var scrapeInterval = setInterval(function () {
+                    console.log( index );
+
+                    if ( index >= linkArray.length-1 )
+                    {
+                      clearInterval( scrapeInterval );
+                    }
+
+                    scrapePromise( linkArray[index] )
+                        .then(function (res) {
+                          console.log( res );
+                            //þegar srapePromise er uppfyllt setjum við upplýsingarnar í gagnagrunn
+                            insertCocktail( connection, res.name, res.description, res.ingredientNames, res.image_url, res.preparation );
+                      });
+
+                    index++;
+                  }, 2000);
+
+
 
 //Framkvæmum fyrirspurn á http://en.wikipedia.org/wiki/List_of_IBA_official_cocktails
 // requestPromise('http://en.wikipedia.org/wiki/List_of_IBA_official_cocktails')

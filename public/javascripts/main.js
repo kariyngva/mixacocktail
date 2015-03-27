@@ -227,9 +227,13 @@
           var results = $('<div class="rescontainer"></div>');
           for (var i = 0; i < data.length; i++) {
               var cjson = data[i],
+              message = parseInt( cjson.message ) > 0 ? '<p>Missing : ' + cjson.message +' Ingredients<p>' : ''
                   ingredients = $('<ul></ul>'),
                   cocktailElm = $('<div class="cocktail">' +
                                     '<h2>' + cjson.name + '</h2>' +
+                                    message +
+                                    '<p>Description:<br/>' + cjson.description + '</p>' +
+                                    '<p>' + 'Ingredients : '+ '</p>'+
                                     '<p class="ingredientsList">' + 'Ingredients : '+ '</p>'+
                                     '<p class="descrText">Description:<br/></p><p>' + cjson.description + '</p>' +
                                   '</div>');

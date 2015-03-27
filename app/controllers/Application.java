@@ -14,6 +14,9 @@ import play.mvc.*;
 import securesocial.core.java.SecuredAction;
 import views.html.*;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+
 import java.lang.reflect.Array;
 import java.util.List;
 import java.util.Map;
@@ -95,8 +98,14 @@ public class Application extends Controller {
      *
      * @return: skilar Json með öllum þeim kokteilum sem innihalda innslegin hráefni.
      **/
-    public static Result findCocktailByIngredient() {
+    public static Result findCocktailByIngredient() throws UnsupportedEncodingException {
         String[] parameters = request().uri().split("\\?")[1].split("-");
+
+        for (int i = 0; i < parameters.length; i++) {
+            parameters[i] = URLDecoder.decode(parameters[i], "UTF-8");
+            Logger.info( parameters[i] );
+        }
+
         List<Cocktail> results = Cocktail.searchByIngredients( Ingredients.searchByNames(parameters) );
         return ok( toJson(results) );
     }
