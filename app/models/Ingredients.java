@@ -71,6 +71,12 @@ public class Ingredients extends Model {
         return results;
     }
 
+    /**
+     * Aðferð: Leitar í Ingredients lista af hráefnum sem innihalda að
+     *         amk. að hluta strenginn í ing
+     *
+     * @return: Skilar lista af hráefnum
+     **/
     public static List<Ingredients> getIngredients(String ing) {
         return find.where().ilike("name", "%" + ing + "%").findList();
     }

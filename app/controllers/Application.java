@@ -14,6 +14,9 @@ import play.mvc.*;
 import securesocial.core.java.SecuredAction;
 import views.html.*;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+
 import java.lang.reflect.Array;
 import java.util.List;
 import java.util.Map;
@@ -95,8 +98,14 @@ public class Application extends Controller {
      *
      * @return: skilar Json með öllum þeim kokteilum sem innihalda innslegin hráefni.
      **/
-    public static Result findCocktailByIngredient() {
+    public static Result findCocktailByIngredient() throws UnsupportedEncodingException {
         String[] parameters = request().uri().split("\\?")[1].split("-");
+
+        for (int i = 0; i < parameters.length; i++) {
+            parameters[i] = URLDecoder.decode(parameters[i], "UTF-8");
+            Logger.info( parameters[i] );
+        }
+
         List<Cocktail> results = Cocktail.searchByIngredients( Ingredients.searchByNames(parameters) );
         return ok( toJson(results) );
     }
@@ -110,6 +119,11 @@ public class Application extends Controller {
         }
     }
 
+    /**
+     * Aðferð: Reynir að auðkenna facebook notanda
+     *
+     * @return: Skilar streng sem segir að notandi sé auðkenndur
+     **/
     @SecuredAction(authorization = WithProvider.class, params = {"facebook"})
     public Result onlyFacebook() {
         return ok("You are seeing this because you logged in using Facebook");
@@ -126,11 +140,12 @@ public class Application extends Controller {
     public Application(RuntimeEnvironment<DemoUser> env) {
         this.env = env;
     }
+
     /**
-     * This action only gets called if the user is logged in.
+     * Aðferð: Býr til tilvik af DemoUser og birtir prófíl
      *
-     * @return
-     */
+     * @return: Skilar prófíl síðu fyrir innskráðan notanda
+     **/
     @SecuredAction
     public Result profile() {
         if(logger.isDebugEnabled()){
@@ -140,6 +155,11 @@ public class Application extends Controller {
         return ok(profile.render(user, SecureSocial.env()));
     }
 
+    /**
+     * Aðferð: Býr til tilvik af DemoUser og birtir prufusíðu
+     *
+     * @return: Skilar mismunandi prufusíðu fyrir innskráðan og óinnskráða notendur
+     **/
     @UserAwareAction
     public Result userAware() {
         DemoUser demoUser = (DemoUser) ctx().args.get(SecureSocial.USER_KEY);
@@ -161,15 +181,17 @@ public class Application extends Controller {
 
 
     /**
-     * Sample use of SecureSocial.currentUser. Access the /current-user to test it
-     */
+     * Aðferð: Býr til tilvik af DemoUser og birtir prufusíðu
+     *
+     * @return: Skilar mismunandi prufusíðu fyrir innskráðan og óinnskráða notendur
+     **/
     public F.Promise<Result> currentUser() {
-        return SecureSocial.currentUser(env).map( new F.Function<Object, Result>() {
+        return SecureSocial.currentUser(env).map(new F.Function<Object, Result>() {
             @Override
             public Result apply(Object maybeUser) throws Throwable {
                 String id;
 
-                if ( maybeUser != null ) {
+                if (maybeUser != null) {
                     DemoUser user = (DemoUser) maybeUser;
                     id = user.main.userId();
                 } else {
