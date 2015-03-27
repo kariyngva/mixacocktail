@@ -3,9 +3,9 @@
 body {
   font-family: 'Open Sans', sans-serif;
 }
- h1, h2, h3, h4 {
+ h1,h2, h3, h4 {
   font-family: 'Merriweather', serif;
-  color: #ffdd00;
+  color: #ee2c4c;
   text-transform: uppercase;
   letter-spacing: .1em;
  }
@@ -20,12 +20,87 @@ body {
   max-height: 100px;
 }
 
+.fbLogin{
+  text-align: center;
+  font-size: 0.8em;
+  max-width:8%;
+  border-bottom : dotted thin #f8beca;
+  border-left: dotted thin #f8beca;
+  padding:0.4em;
+  top:5px;
+  right:5px;
+  position:absolute;
+
+}
+
+.fbLogin a {
+   color: #ff2e3a;
+   text-decoration: none;
+}
+
+.fbLogin a:hover{
+  text-decoration:underline;
+
+}
+
 header,
 .wrap {
   max-width: 1230px;
   padding: 0 15px;
   margin: 0 auto;
 }
+
+header{
+  text-align: center;
+  line-height: 10px;
+  border-bottom:1px solid #f8beca;
+  width:60%;
+}
+header p {
+  text-align: center;
+  line-height: 10px;
+  padding-bottom: 30px;
+  text-transform: uppercase;
+  letter-spacing: .3em;
+  color:#026a10;
+
+}
+p.infoText{
+  padding-top: 30px;
+  padding-bottom:30px;
+  text-align: center;
+  width:37%;
+  margin:0 auto;
+
+}
+a.list{
+  color:#ff2e3a;
+  text-decoration: none;
+}
+a.list:hover{
+  color:green;
+  /*text-decoration: underline;*/
+}
+a.searchLink {
+  color:#ff2e3a;
+  text-decoration: none;
+}
+a.searchLink:hover {
+  color:green;
+}
+
+p.ingredientsList{
+  /*color:#ee2c4c;*/
+  font-style: bold;
+  text-decoration: underline;
+
+}
+p.descrText{
+  /*color:#ee2c4c;*/
+  font-style: bold;
+  text-decoration: underline;
+}
+
 
 
 .search:after { content:""; display:block; clear:both; height:0;  visibility:hidden; }
@@ -183,7 +258,7 @@ header,
   color: #000;
 }
 
-.nav .current {
+/*.nav .current {
   background-color: #f96272;
   color: #fff;
   border-radius: 5px;
@@ -192,4 +267,4 @@ header,
   line-height: 35px;
   padding: 7px 16px;
   padding: 6px 15px 6px 16px;
-}
+}*/

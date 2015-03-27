@@ -51,16 +51,16 @@ public class Cocktail extends Model {
     }
 
     /**
-     * Aðferð: Bætir hráefni við Ingredients lista
+     * Aðferð: Bætir hráefni við  Ingredients hlut
      *
-     * @param ingredient er hráefni í Ingredients lista.
+     * @param ingredient er hráefni í Ingredients hlut.
      **/
     public void addIngredient(Ingredients ingredient) {
         ingredients.add(ingredient);
     }
 
     /**
-     * Aðferð: Nær í hráefni úr Ingredient lista.
+     * Aðferð: Nær í hráefni úr Ingredient lista .
      *
      * @return: Skilar lista af hráefnum úr Ingredients lista.
      **/
@@ -69,13 +69,12 @@ public class Cocktail extends Model {
     }
 
     /**
-     * Aðferð: Finder er leitar hlutur fyrir Cocktail með ID af taginu Long.
+     * Aðferð: Leitar af Cocktail af taginu String í cokctail klasa.
      *
-     * @param Cocktail  er hluturinn sem leitarinn er fyrir og Long er
-     *                 tagið sem auðkenni hlutarins er af.
+     * @param Cocktail er af taginu String.
      **/
-    public static Finder<Long,Cocktail> find = new Finder<Long,Cocktail>(
-            Long.class, Cocktail.class
+    public static Finder<String,Cocktail> find = new Finder<String,Cocktail>(
+            String.class, Cocktail.class
     );
 
     /**
@@ -104,14 +103,13 @@ public class Cocktail extends Model {
     }
 
     /**
-     * Aðferð: Fyrirspurning okkar á gagnagrunninn, tekur alla kokteila og leitar eftir innslegnu hráefni.
+     * Aðferð: Fyrirspurning okkar á gagnagrunninn, tekur alla kokteila og leitar eftir innsláðu hráefni.
      *
-     * @return: Skilar lista af kokteilum sem innihalda eitthvert þeirra hráefna sem leitað var að.
+     * @return: Skilar lista af kokteilum sem innihalda það hráefni sem leitað var að.
      **/
     public static List<Cocktail> searchByIngredients(List<Ingredients> ingredients) {
         String ingredientIds = "";
 
-        //Byggum upp SQL með því að bæta id hvers hráefnis í strenginn ingredientIds.
         for( Ingredients ingr : ingredients ){
             if ( ingredients.indexOf( ingr ) == 0 )
             {
@@ -123,7 +121,6 @@ public class Cocktail extends Model {
             }
         }
 
-        //Búum til SQL fyrirspurn sem skilar okkur kokteilum, ásamt hversu mörg hráefni passa og hversu mörg vantar.
         String sql = "select id, name, description from " +
                 "(select " +
                 "count(ingredients_id) as matching_ingredients, " +

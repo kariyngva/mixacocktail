@@ -3,18 +3,20 @@
     <div class="wrap">
 
         <div class="nav">
-            <ul>
+            <p class="infoText"><a class="list" href="/allCocktails">Click here</a> to see a list of cocktails for inspiration.
+            <br> Or <a class="searchLink current" href="#list">Add ingredients </a> here to see what cocktail you can mix!</p>
+            <!-- <ul>
                 <li><a class="searchLink current" href="#list">Search</a></li>
                 <li><a class="list" href="/allCocktails">List of Cocktails</a></li>
-            </ul>
+            </ul> -->
         </div>
 
         <section class="search">
 
             <form  action="@routes.Application.findCocktailByIngredient()">
-                <label for="search">Type in the name of a cocktail or ingredients</label>
+                <!-- <label for="search">Type in the name of a cocktail or ingredients</label> -->
                 <div class="fi_txt ">
-                    <input id="search" type="text" name="search" value="" />
+                    <input id="search" type="text" name="search" value="" placeholder="Add ingredient" />
                 </div>
                 <div class="fi_btn"><input type="submit" value="Add" /></div>
             </form>
@@ -27,7 +29,7 @@
         </section>
 
         <section class="results">
-            <h2>And your results....</h2>
+            <!-- <h2>And your results....</h2> -->
         </section>
     </div>
 }

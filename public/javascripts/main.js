@@ -32,7 +32,8 @@
                 if(!$(this).is('.current'))
                 {
                   $('.results').empty();
-                  $('.search .fi_btn input').val('Filter');
+                  $('.search').slideUp();
+                  // $('.search .fi_btn input').val('Filter');
                   $('body').addClass('listActive');
                   $('.nav .current').removeClass('current');
                   $(this).addClass('current');
@@ -59,10 +60,13 @@
 
                 if(!$(this).is('.current'))
                 {
+                  $('.search').slideDown();
+
                   if( $('.results').contents().length )
                   {
                     listofcocktails = $('.results').contents();
                   }
+
                   $('body').removeClass('listActive');
                   $('.search .fi_btn input').val('Add');
                   $('.nav .current').removeClass('current');
@@ -226,8 +230,8 @@
                   ingredients = $('<ul></ul>'),
                   cocktailElm = $('<div class="cocktail">' +
                                     '<h2>' + cjson.name + '</h2>' +
-                                    '<p>Description:<br/>' + cjson.description + '</p>' +
-                                    '<p>' + 'Ingredients : '+ '</p>'+
+                                    '<p class="ingredientsList">' + 'Ingredients : '+ '</p>'+
+                                    '<p class="descrText">Description:<br/></p><p>' + cjson.description + '</p>' +
                                   '</div>');
 
               //Iterate over ingredients for given cocktail
@@ -237,7 +241,8 @@
               }
 
               //add ingredients to element
-              cocktailElm.append( ingredients );
+              // cocktailElm.prepend( ingredients );
+              ingredients.insertAfter( cocktailElm.find('p.ingredientsList') );
               results.append( cocktailElm );
           }
           return results;
