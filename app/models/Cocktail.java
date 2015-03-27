@@ -22,14 +22,21 @@ public class Cocktail extends Model {
     @GeneratedValue(strategy = GenerationType.AUTO)
     public Long id;
     public String name;
+
+    @Column(columnDefinition = "TEXT")
     public String description;
+
+    @Column(columnDefinition = "TEXT")
+    public String preparation;
+
+    @Column(length = 400)
+    public String imageUrl;
 
     @Transient
     public String message = "";
 
     @ManyToMany(cascade = CascadeType.PERSIST)
     private List<Ingredients> ingredients;
-    private List<Cocktail> cocktail;
 
     //@ManyToOne(cascade = CascadeType.ALL)
     //private List<Double> amount;
