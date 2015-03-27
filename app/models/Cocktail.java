@@ -11,7 +11,7 @@ import com.avaje.ebean.Query;
 import play.Logger;
 import play.db.ebean.Model;
 import scala.collection.immutable.Map;
-
+import javax.persistence.Transient;
 import javax.persistence.*;
 import java.util.List;
 
@@ -23,6 +23,9 @@ public class Cocktail extends Model {
     public Long id;
     public String name;
     public String description;
+
+    @Transient
+    public String message = "";
 
     @ManyToMany(cascade = CascadeType.PERSIST)
     private List<Ingredients> ingredients;
@@ -124,7 +127,7 @@ public class Cocktail extends Model {
         }
 
         //Búum til SQL fyrirspurn sem skilar okkur kokteilum, ásamt hversu mörg hráefni passa og hversu mörg vantar.
-        String sql = "select id, name, description from " +
+        String sql = "select id, name, description, missing_ingredients from " +
                 "(select " +
                 "count(ingredients_id) as matching_ingredients, " +
                 "(select count(*) from cocktail_ingredients as ci0 where ci0.cocktail_id = c.id) as total_ingredients, " +
@@ -147,6 +150,7 @@ public class Cocktail extends Model {
                     .columnMapping("id", "id")
                     .columnMapping("name", "name")
                     .columnMapping("description", "description")
+                    .columnMapping("missing_ingredients", "message")
                         .create();
 
         Query<Cocktail> query = Ebean.find(Cocktail.class);
