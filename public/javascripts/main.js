@@ -32,16 +32,20 @@
                 if(!$(this).is('.current'))
                 {
                   $('.results').empty();
-                  $('.search .fi_btn input').val('Filter');
+                  $('.search').slideUp();
+                  // $('.search .fi_btn input').val('Filter');
                   $('body').addClass('listActive');
                   $('.nav .current').removeClass('current');
                   $(this).addClass('current');
+
                   getCocktails( cLinkHref, '/' + page,false );
                   page++;
+
                   if(listofcocktails)
                   {
                     $('.results').prepend(listofcocktails);
                   }
+
                   $win.on('scroll.bottom', function(){
                     //Skroll fyrir listofcocktails takkann
                     if( $win.scrollTop() == $doc.height() - $win.height() )
@@ -58,12 +62,15 @@
                 e.preventDefault();
 
                 if(!$(this).is('.current'))
-                { 
+                {
+                  $('.search').slideDown();
+
                   if( $('.results').contents().length )
                   {
                     listofcocktails = $('.results').contents();
                     $('.results').empty();
                   }
+
                   $('body').removeClass('listActive');
                   $('.search .fi_btn input').val('Add');
                   $('.nav .current').removeClass('current');
@@ -71,7 +78,6 @@
                   getCocktails( '/findCocktailByIngredient', '?' + getTagList(), true );
                   //Skroll fyrir search takkann
                   $win.off('scroll.bottom');
-
                 }
               });
 
@@ -215,6 +221,7 @@
                 )
               .done(function(data) {
                   empty && $('.results').empty();
+                  ;;;window.console&&console.log( data );
                   $('.results').append( generateMarkup(data) );
                 })
               .always(function() {
@@ -248,6 +255,8 @@
                                     message +
                                     '<p>Description:<br/>' + cjson.description + '</p>' +
                                     '<p>' + 'Ingredients : '+ '</p>'+
+                                    '<p class="ingredientsList">' + 'Ingredients : '+ '</p>'+
+                                    '<p class="descrText">Description:<br/></p><p>' + cjson.description + '</p>' +
                                   '</div>');
 
               //Iterate over ingredients for given cocktail
@@ -257,7 +266,8 @@
               }
 
               //add ingredients to element
-              cocktailElm.append( ingredients );
+              // cocktailElm.prepend( ingredients );
+              ingredients.insertAfter( cocktailElm.find('p.ingredientsList') );
               results.append( cocktailElm );
           }
           return results;
