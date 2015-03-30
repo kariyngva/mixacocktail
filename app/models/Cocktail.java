@@ -11,7 +11,7 @@ import com.avaje.ebean.Query;
 import play.Logger;
 import play.db.ebean.Model;
 import scala.collection.immutable.Map;
-
+import javax.persistence.Transient;
 import javax.persistence.*;
 import java.util.List;
 
@@ -22,11 +22,26 @@ public class Cocktail extends Model {
     @GeneratedValue(strategy = GenerationType.AUTO)
     public Long id;
     public String name;
+
+    @Column(columnDefinition = "TEXT")
     public String description;
+
+    @Column(columnDefinition = "TEXT")
+    public String preparation;
+
+    @Column(length = 400)
+    public String imageUrl;
+
+    @Transient
+    public String message = "";
+    @Transient
+    public int ratingValue = this.CalculateRating();
 
     @ManyToMany(cascade = CascadeType.PERSIST)
     private List<Ingredients> ingredients;
-    private List<Cocktail> cocktail;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Rating> rating;
 
     //@ManyToOne(cascade = CascadeType.ALL)
     //private List<Double> amount;
@@ -51,16 +66,16 @@ public class Cocktail extends Model {
     }
 
     /**
-     * Aðferð: Bætir hráefni við  Ingredients hlut
+     * Aðferð: Bætir hráefni við Ingredients lista
      *
-     * @param ingredient er hráefni í Ingredients hlut.
+     * @param ingredient er hráefni í Ingredients lista.
      **/
     public void addIngredient(Ingredients ingredient) {
         ingredients.add(ingredient);
     }
 
     /**
-     * Aðferð: Nær í hráefni úr Ingredient lista .
+     * Aðferð: Nær í hráefni úr Ingredient lista.
      *
      * @return: Skilar lista af hráefnum úr Ingredients lista.
      **/
@@ -69,12 +84,33 @@ public class Cocktail extends Model {
     }
 
     /**
-     * Aðferð: Leitar af Cocktail af taginu String í cokctail klasa.
+     * Aðferð:
      *
-     * @param Cocktail er af taginu String.
+     * @return:
      **/
-    public static Finder<String,Cocktail> find = new Finder<String,Cocktail>(
-            String.class, Cocktail.class
+    public int getRatingValue() {
+        return this.ratingValue;
+    }
+
+
+    /**
+     * Aðferð:
+     *
+     * @return:
+     **/
+    public List<Rating> getRating() {
+        return this.rating;
+    }
+
+
+    /**
+     * Aðferð: Finder er leitar hlutur fyrir Cocktail með ID af taginu Long.
+     *
+     * @param Cocktail  er hluturinn sem leitarinn er fyrir og Long er
+     *                 tagið sem auðkenni hlutarins er af.
+     **/
+    public static Finder<Long,Cocktail> find = new Finder<Long,Cocktail>(
+            Long.class, Cocktail.class
     );
 
     /**
@@ -103,13 +139,14 @@ public class Cocktail extends Model {
     }
 
     /**
-     * Aðferð: Fyrirspurning okkar á gagnagrunninn, tekur alla kokteila og leitar eftir innsláðu hráefni.
+     * Aðferð: Fyrirspurning okkar á gagnagrunninn, tekur alla kokteila og leitar eftir innslegnu hráefni.
      *
-     * @return: Skilar lista af kokteilum sem innihalda það hráefni sem leitað var að.
+     * @return: Skilar lista af kokteilum sem innihalda eitthvert þeirra hráefna sem leitað var að.
      **/
     public static List<Cocktail> searchByIngredients(List<Ingredients> ingredients) {
         String ingredientIds = "";
 
+        //Byggum upp SQL með því að bæta id hvers hráefnis í strenginn ingredientIds.
         for( Ingredients ingr : ingredients ){
             if ( ingredients.indexOf( ingr ) == 0 )
             {
@@ -121,7 +158,8 @@ public class Cocktail extends Model {
             }
         }
 
-        String sql = "select id, name, description from " +
+        //Búum til SQL fyrirspurn sem skilar okkur kokteilum, ásamt hversu mörg hráefni passa og hversu mörg vantar.
+        String sql = "select id, name, description, missing_ingredients from " +
                 "(select " +
                 "count(ingredients_id) as matching_ingredients, " +
                 "(select count(*) from cocktail_ingredients as ci0 where ci0.cocktail_id = c.id) as total_ingredients, " +
@@ -144,11 +182,38 @@ public class Cocktail extends Model {
                     .columnMapping("id", "id")
                     .columnMapping("name", "name")
                     .columnMapping("description", "description")
+                    .columnMapping("missing_ingredients", "message")
                         .create();
 
         Query<Cocktail> query = Ebean.find(Cocktail.class);
         query.setRawSql(rawSql);
 
         return query.findList();
+    }
+
+    public int CalculateRating() {
+        return 3;
+        /*int sum = 0;
+        for (Rating r: this.rating) {
+            Logger.info(r.getRating()+"rating--------");
+            sum += r.getRating();
+        }
+        if (rating.size() == 0){
+          return 0;
+        }
+        return sum/this.rating.size();*/
+    }
+
+    public void addRating(String userid, int rating){
+        Rating r = new Rating(userid, rating);
+        this.rating.add(r);
+        this.save();
+    }
+
+    public static Cocktail findById(Long cid){
+        return Ebean.find(Cocktail.class)
+                .where()
+                .eq("id", cid)
+                .findUnique();
     }
 }

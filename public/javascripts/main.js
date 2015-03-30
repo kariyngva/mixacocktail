@@ -81,11 +81,7 @@
                 }
               });
 
-    };
-
-
-
-
+  };
     /**
      * Aðferð: Bindir atburði við leitar form, tekur streng úr leitarformi og setur í hráefna-lista
      *         Framkvæmir leit út frá hráefnalista
@@ -95,37 +91,64 @@
               searchInput = form.find('.fi_txt input'),
               tagList = $('.tags ul');
 
-          //Notumst við jQuery UI autocomplete plugin þar sem í hvert skipti sem gildi í leitarreitnum
-          //er gert kall á getIngredients með gildinu og notendanum birtur listi af gildum sem líkjast því sem
-          //slegið var inn
-          searchInput.autocomplete({
-            source: function(request, response){
-              $.ajax({
-                url: '/getIngredients/' + request.term,
-                dataType: "json",
-                data:request.term,
-                success: function( data ) {
-                  var results = [];
-                  for (var i = 0; i < data.length; i++) {
-                    delete data[i].id;
-                    results.push(data[i].name);
-                  };
-                  response( results );
-                }
-              });
-            },
-            autoFocus: true,
-            minLength:3,
-            select : function(event, ui) {
-                if( $('.searchLink').is('.current')) //ef leit er valin
-                {
-                  tagList.prepend('<li><span>' + ui.item.value + '</span><a class="removetag" href="#removetag">x</a></li>');
-                  searchInput.val('');
-                  getCocktails( form.attr('action'), '?' + getTagList(), true );
-                }
-              return false;
-            }
-          });
+    var availableTags = [
+      "Rum",
+      "Vodka",
+      "Tequila",
+      "Gin",
+      "Passoa",
+      "Coke",
+      "Strawberries",
+      "Tonic",
+      "Sugar"
+    ];
+    searchInput.autocomplete({
+
+      source: function(request, response){
+
+
+        $.ajax({
+          url: '/getIngredients/' + request.term,
+          dataType: "json",
+          data:request.term,
+
+
+          success: function( data ) {
+            var results = [];
+            for (var i = 0; i < data.length; i++) {
+              delete data[i].id;
+              results.push(data[i].name);
+            };
+            response( results );
+          }
+        });
+      },  
+      autoFocus: true,
+      minLength:3,
+
+      change: function (event, ui) {
+          console.log('change');
+          if(ui.item)
+          {
+            canSubmit = true;
+          }
+          else
+          {
+            canSubmit = false;
+          }
+
+        },
+      select : function(event, ui) {
+          if( $('.searchLink').is('.current')) //ef leit er valin
+          {
+            tagList.prepend('<li><span>' + ui.item.value + '</span><a class="removetag" href="#removetag">x</a></li>');
+            searchInput.val('');
+            getCocktails( form.attr('action'), '?' + getTagList(), true );
+          }
+        return false;
+      }
+
+    });
 
           form
               .on('submit', function (e) {
@@ -166,16 +189,11 @@
 
                 });
     };
-
-
-
-
-
-   /**
-    * Aðferð: Breytir hráefnalista í streng þar sem hráefnin eru aðskilin með bandstriki
-    *
-    * @return: Skilar streng af hráefnum.
-    **/
+ /**
+  * Aðferð: Breytir hráefnalista í streng þar sem hráefnin eru aðskilin með bandstriki
+  *
+  * @return: Skilar streng af hráefnum.
+  **/
   var getTagList = function () {
           var tagList = $('.tags ul'),
               tagString = "";
@@ -190,15 +208,10 @@
 
           return tagString;
     };
-
-
-
-
-
-   /**
-    * Aðferð: Sækir kokteila á JSON formi og setur þá inn í .results
-    *
-    **/
+ /**
+  * Aðferð: Sækir kokteila á JSON formi og setur þá inn í .results
+  *
+  **/
   var getCocktails = function ( url, queryString, empty ) {
           if ( queryString.length )
           {
@@ -216,16 +229,11 @@
                 });
           }
     }
-
-
-
-
-
-   /**
-    * Aðferð: Tekur inn fylki af kokteilum á JSON formi
-    *
-    * @return: Skilar Markup fyrir hvern kokteil í fylkinu
-    **/
+ /**
+  * Aðferð: Tekur inn fylki af kokteilum á JSON formi
+  *
+  * @return: Skilar Markup fyrir hvern kokteil í fylkinu
+  **/
   var generateMarkup = function( data ) {
 
           var results = $('<div class="rescontainer"></div>');
@@ -233,7 +241,16 @@
               var cjson = data[i],
               message = parseInt( cjson.message ) > 0 ? '<p>Missing : ' + cjson.message +' Ingredients<p>' : ''
                   ingredients = $('<ul></ul>'),
-                  cocktailElm = $('<div class="cocktail">' +
+                  cocktailElm = $('<div class="cocktail ">' +
+                                    '<div class="rating rating-' + cjson.ratingValue + '">' +
+                                      '<ul>' +
+                                      '<li><a href="/updateRating/' + cjson.id + '/1">1</a></li>' +
+                                      '<li><a href="/updateRating/' + cjson.id + '/2">2</a></li>' +
+                                      '<li><a href="/updateRating/' + cjson.id + '/3">3</a></li>' +
+                                      '<li><a href="/updateRating/' + cjson.id + '/4">4</a></li>' +
+                                      '<li><a href="/updateRating/' + cjson.id + '/5">5</a></li>' +
+                                      '</ul>' +
+                                    '</div>' +
                                     '<h2>' + cjson.name + '</h2>' +
                                     message +
                                     '<p class="ingredientsList">' + 'Ingredients : '+ '</p>'+
