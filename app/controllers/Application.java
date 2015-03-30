@@ -120,6 +120,33 @@ public class Application extends Controller {
     }
 
     /**
+     * Aðferð: Nær í userID og leyfir notenda að gefa kokteil einkunn
+     *
+     * @return: Skilar promise af taginu Result
+     **/
+    public F.Promise<Result> updateRating(final Long cid, final int rating) {
+        return SecureSocial.currentUser(env).map(new F.Function<Object, Result>() {
+            @Override
+            public Result apply(Object maybeUser) throws Throwable {
+                String id;
+
+                Cocktail cocktail = Cocktail.findById(cid);
+                if (maybeUser != null) {
+                    DemoUser user = (DemoUser) maybeUser;
+                    id = user.main.userId();
+                    cocktail.addRating(id, rating);
+                    Logger.info("--------");
+                    Logger.info("id: " + id + "rating: " + rating);
+
+                } else {
+                    id = "not available. Please log in.";
+                }
+                return ok( toJson( cocktail ) );
+            }
+        });
+    }
+
+    /**
      * Aðferð: Reynir að auðkenna facebook notanda
      *
      * @return: Skilar streng sem segir að notandi sé auðkenndur
@@ -180,25 +207,4 @@ public class Application extends Controller {
     }
 
 
-    /**
-     * Aðferð: Býr til tilvik af DemoUser og birtir prufusíðu
-     *
-     * @return: Skilar mismunandi prufusíðu fyrir innskráðan og óinnskráða notendur
-     **/
-    public F.Promise<Result> currentUser() {
-        return SecureSocial.currentUser(env).map(new F.Function<Object, Result>() {
-            @Override
-            public Result apply(Object maybeUser) throws Throwable {
-                String id;
-
-                if (maybeUser != null) {
-                    DemoUser user = (DemoUser) maybeUser;
-                    id = user.main.userId();
-                } else {
-                    id = "not available. Please log in.";
-                }
-                return ok("your id is " + id);
-            }
-        });
-    }
 }

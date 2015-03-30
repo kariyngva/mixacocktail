@@ -34,9 +34,14 @@ public class Cocktail extends Model {
 
     @Transient
     public String message = "";
+    @Transient
+    public int ratingValue = this.CalculateRating();
 
     @ManyToMany(cascade = CascadeType.PERSIST)
     private List<Ingredients> ingredients;
+
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Rating> rating;
 
     //@ManyToOne(cascade = CascadeType.ALL)
     //private List<Double> amount;
@@ -77,6 +82,26 @@ public class Cocktail extends Model {
     public List<Ingredients> getIngredients() {
         return this.ingredients;
     }
+
+    /**
+     * Aðferð:
+     *
+     * @return:
+     **/
+    public int getRatingValue() {
+        return this.ratingValue;
+    }
+
+
+    /**
+     * Aðferð:
+     *
+     * @return:
+     **/
+    public List<Rating> getRating() {
+        return this.rating;
+    }
+
 
     /**
      * Aðferð: Finder er leitar hlutur fyrir Cocktail með ID af taginu Long.
@@ -164,5 +189,31 @@ public class Cocktail extends Model {
         query.setRawSql(rawSql);
 
         return query.findList();
+    }
+
+    public int CalculateRating() {
+        return 3;
+        /*int sum = 0;
+        for (Rating r: this.rating) {
+            Logger.info(r.getRating()+"rating--------");
+            sum += r.getRating();
+        }
+        if (rating.size() == 0){
+          return 0;
+        }
+        return sum/this.rating.size();*/
+    }
+
+    public void addRating(String userid, int rating){
+        Rating r = new Rating(userid, rating);
+        this.rating.add(r);
+        this.save();
+    }
+
+    public static Cocktail findById(Long cid){
+        return Ebean.find(Cocktail.class)
+                .where()
+                .eq("id", cid)
+                .findUnique();
     }
 }
