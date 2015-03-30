@@ -236,8 +236,6 @@
                   cocktailElm = $('<div class="cocktail">' +
                                     '<h2>' + cjson.name + '</h2>' +
                                     message +
-                                    '<p>Description:<br/>' + cjson.description + '</p>' +
-                                    '<p>' + 'Ingredients : '+ '</p>'+
                                     '<p class="ingredientsList">' + 'Ingredients : '+ '</p>'+
                                     '<p class="descrText">Description:<br/></p><p>' + cjson.description + '</p>' +
                                   '</div>');
