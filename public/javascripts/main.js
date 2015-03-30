@@ -37,12 +37,15 @@
                   $('body').addClass('listActive');
                   $('.nav .current').removeClass('current');
                   $(this).addClass('current');
+
                   getCocktails( cLinkHref, '/' + page,false );
                   page++;
+
                   if(listofcocktails)
                   {
                     $('.results').prepend(listofcocktails);
                   }
+
                   $win.on('scroll.bottom', function(){
                     //Skroll fyrir listofcocktails takkann
                     if( $win.scrollTop() == $doc.height() - $win.height() )
@@ -65,6 +68,7 @@
                   if( $('.results').contents().length )
                   {
                     listofcocktails = $('.results').contents();
+                    $('.results').empty();
                   }
 
                   $('body').removeClass('listActive');
@@ -74,7 +78,6 @@
                   getCocktails( '/findCocktailByIngredient', '?' + getTagList(), true );
                   //Skroll fyrir search takkann
                   $win.off('scroll.bottom');
-
                 }
               });
 
@@ -205,6 +208,7 @@
                 )
               .done(function(data) {
                   empty && $('.results').empty();
+                  ;;;window.console&&console.log( data );
                   $('.results').append( generateMarkup(data) );
                 })
               .always(function() {
