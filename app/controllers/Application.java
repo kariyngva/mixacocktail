@@ -6,6 +6,7 @@
  */
 package controllers;
 
+import models.Rating;
 import play.*;
 import models.Ingredients;
 import models.Cocktail;
@@ -129,14 +130,24 @@ public class Application extends Controller {
             @Override
             public Result apply(Object maybeUser) throws Throwable {
                 String id;
-
+                int sum = 0;
                 Cocktail cocktail = Cocktail.findById(cid);
-                if (maybeUser != null) {
+                if (maybeUser != null && rating >0 && rating < 6) {
                     DemoUser user = (DemoUser) maybeUser;
                     id = user.main.userId();
                     cocktail.addRating(id, rating);
                     Logger.info("--------");
                     Logger.info("id: " + id + "rating: " + rating);
+                    for(Rating cr : cocktail.getRating()){
+                        Logger.info(cr.getRating() + "");
+                        Logger.info(cr +"ratingTest--------");
+                        sum += cr.getRating();
+                        Logger.info("sum" +  sum );
+                    }
+                    if(cocktail.getRating().size() > 0){
+                        sum = sum/cocktail.getRating().size();
+                    }
+                    cocktail.ratingValue = sum;
 
                 } else {
                     id = "not available. Please log in.";
