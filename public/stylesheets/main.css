@@ -10,11 +10,6 @@ body {
   letter-spacing: .1em;
  }
 
-
-
-
-
-
 /**** logo/header ****/
 .logo img {
   max-height: 100px;
@@ -23,7 +18,7 @@ body {
 .fbLogin{
   text-align: center;
   font-size: 0.8em;
-  max-width:8%;
+  max-width:12%;
   border-bottom : dotted thin #f8beca;
   border-left: dotted thin #f8beca;
   padding:0.4em;
@@ -52,18 +47,17 @@ header,
 
 header{
   text-align: center;
-  line-height: 10px;
+  line-height: 50px;
   border-bottom:1px solid #f8beca;
   width:60%;
 }
 header p {
   text-align: center;
-  line-height: 10px;
+  line-height: 40px;
   padding-bottom: 30px;
   text-transform: uppercase;
   letter-spacing: .3em;
   color:#026a10;
-
 }
 p.infoText{
   padding-top: 30px;
@@ -71,6 +65,7 @@ p.infoText{
   text-align: center;
   width:37%;
   margin:0 auto;
+  line-height:40px;
 
 }
 a.list{
@@ -258,13 +253,157 @@ p.descrText{
   color: #000;
 }
 
-/*.nav .current {
-  background-color: #f96272;
-  color: #fff;
-  border-radius: 5px;
-  border: 0;
-  font-size: 24px;
-  line-height: 35px;
-  padding: 7px 16px;
-  padding: 6px 15px 6px 16px;
-}*/
+@media screen and (max-width: 525px)
+{
+
+  body{font-family: 'Open Sans', sans-serif;}
+  h1,h2, h3, h4 {
+    font-family: 'Merriweather', serif;
+    color: #ee2c4c;
+    text-transform: uppercase;
+    font-size: 1em;
+    letter-spacing: .1em;
+  }
+  header p {
+    text-align: center;
+    font-size: 0.7em;
+    line-height: 25px;
+    padding-bottom: 5px;
+    text-transform: uppercase;
+    letter-spacing: .3em;
+    color:#026a10;
+  }
+  .fbLogin{
+    text-align: center;
+    font-size: 0.6em;
+    max-width:100%;
+    border-bottom:none;
+    border-left:none;
+    padding:0;
+    padding-bottom:10px;
+    position:static;
+
+  }
+  p.infoText{
+    padding-top: 10px;
+    padding-bottom:30px;
+    border-top:1px solid #f8beca;
+    font-size: 0.8em;
+    text-align: center;
+    width:75%;
+    margin:0 auto;
+    line-height:40px;
+
+  }
+  .search {
+    width: 80%;
+    margin: 0 auto;
+    border-bottom: 1px solid #dedede;
+  }
+  .search .fi_btn input {
+    width:100%;
+    background-color: #1ac200;
+    color: #fff;
+    border-bottom-right-radius: 0px;
+    border-top-right-radius: 0px;
+    border: 0;
+    font-size: 16px;
+    line-height: 23px;
+    padding: 4px 10px;
+    border: 1px solid #009d00;
+    padding: 4px 8px 4px 10px;
+  }
+  .search .fi_btn {
+    float: none;
+    margin: 0;
+  }
+  .search .fi_btn input:hover,
+  .search .fi_btn input:focus,
+  .search .fi_btn input:active {
+    box-shadow: 0 0 10px rgba(0, 0, 0, .3) inset;
+    cursor: pointer;
+    color: #f1f1f1;
+    padding: 5px 10px;
+    border: 0;
+  }
+  .search .fi_txt {
+    width: 100%;
+    float: center;
+    padding-right: 0;
+    box-sizing: border-box;
+  }
+  .search .fi_txt input {
+    width: 100%;
+    line-height: 24px;
+    font-size: 16px;
+    display: block;
+    box-sizing: border-box;
+    padding: 3px 13px;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+    border: 1px solid #dedede;
+  }
+
+  ::-webkit-input-placeholder {
+   text-align: center;
+  }
+
+  ::-moz-placeholder {  /* Firefox 19+ */
+     text-align: center;  
+  }
+
+  :-ms-input-placeholder {  
+     text-align: center; 
+  }
+  /**** results ****/
+  .results {
+    clear: both;
+    width: 80%;
+    margin: 0 auto;
+  }
+
+  .results h2 {
+  }
+  .cocktail {
+    margin-top: 40px;
+    border: 1px solid #dedede;
+    border-radius: 5px;
+    background-color: rgba(235, 235, 235, .2);
+    padding:0;
+  }
+
+  .cocktail h2 {
+    margin: 0;
+    border-bottom: 1px solid #dedede;
+    padding-top:10px;
+    font-size: 14px;
+  }
+
+  .cocktail {
+    padding-left:10px;
+    padding-right:10px  ;
+    font-size: 12px;
+  }
+
+  .cocktail ul {
+    list-style: none;
+    padding-left: 1em;
+  }
+
+  .nav ul{
+    list-style: none;
+    text-align: center;
+    font-size: 12px;
+    line-height: 30px;
+  }
+
+  .nav li{
+    display:inline-block;
+
+  }
+
+  .nav li a{
+    text-decoration: none;
+    color: #000;
+  }
+}
