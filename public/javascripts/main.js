@@ -239,9 +239,11 @@
           var results = $('<div class="rescontainer"></div>');
           for (var i = 0; i < data.length; i++) {
               var cjson = data[i],
-              message = parseInt( cjson.message ) > 0 ? '<p>Missing : ' + cjson.message +' Ingredients<p>' : ''
+              message = parseInt( cjson.message ) > 0 ? '<p class="missing">Missing : ' + cjson.message +' Ingredients<p>' : ''
                   ingredients = $('<ul></ul>'),
                   cocktailElm = $('<div class="cocktail ">' +
+                                    message + 
+                                    '<h2>' + cjson.name + '</h2>' +
                                     '<div class="rating rating-' + cjson.ratingValue + '">' +
                                       '<ul>' +
                                       '<li><a href="/updateRating/' + cjson.id + '/1">1</a></li>' +
@@ -250,12 +252,15 @@
                                       '<li><a href="/updateRating/' + cjson.id + '/4">4</a></li>' +
                                       '<li><a href="/updateRating/' + cjson.id + '/5">5</a></li>' +
                                       '</ul>' +
-                                    '</div>' +
-                                    '<h2>' + cjson.name + '</h2>' +
-                                    message +
+                                    '</div>' +                            
                                     '<p class="ingredientsList">' + 'Ingredients : '+ '</p>'+
+                                    '<a class="cocktailPhoto">' + '<img src="'+ cjson.imageUrl +'">'  +'</img>' + '</a>' +
                                     '<p class="descrText">Description:<br/></p><p>' + cjson.description + '</p>' +
-                                  '</div>');
+                                    '<div class="fb-comments" data-href="http://developers.facebook.com/docs/plugins/comments/" data-numposts="5" data-colorscheme="light" xid ="i">' +  '</div>' +
+                                    '<a href="/">' +'<p>Click here to view comments' + '</p>' + '</a>' +
+                                  '</div>'  
+
+                                  );
 
               //Iterate over ingredients for given cocktail
               for (var j = 0; j < cjson.ingredients.length; j++) {
@@ -267,7 +272,7 @@
               // cocktailElm.prepend( ingredients );
               ingredients.insertAfter( cocktailElm.find('p.ingredientsList') );
               results.append( cocktailElm );
-          }
+          } 
           return results;
     };
 

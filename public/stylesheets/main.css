@@ -3,13 +3,12 @@
 body {
   font-family: 'Open Sans', sans-serif;
 }
- h1,h2, h3, h4 {
+ h1,h2, h3, h4{
   font-family: 'Merriweather', serif;
   color: #ee2c4c;
   text-transform: uppercase;
   letter-spacing: .1em;
  }
-
 /**** logo/header ****/
 .logo img {
   max-height: 100px;
@@ -83,6 +82,67 @@ a.searchLink {
 a.searchLink:hover {
   color:green;
 }
+
+.rating {
+  float:right;
+}
+
+.rating li{
+  display : inline-block;
+}
+.rating a{
+  overflow:hidden;
+  white-space: nowrap;
+  letter-spacing: -.4em;
+  text-shadow: none;
+  color: transparent;
+  display: inline-block;
+  background: url(/assets/images/rating.png) 0 0 no-repeat;
+  width: 58px;
+  height: 58px;
+}
+.rating a:active,
+.rating a:focus,
+.rating a:hover,
+.rating a:hover .stars  {
+  background-position: 100% 0;
+}
+
+.rating-1 li:nth-child(1) a,
+.rating-2 li:nth-child(1) a,
+.rating-2 li:nth-child(2) a,
+.rating-3 li:nth-child(1) a,
+.rating-3 li:nth-child(2) a,
+.rating-3 li:nth-child(3) a,
+.rating-4 li:nth-child(1) a,
+.rating-4 li:nth-child(2) a,
+.rating-4 li:nth-child(3) a,
+.rating-4 li:nth-child(4) a,
+.rating-5 li:nth-child(1) a,
+.rating-5 li:nth-child(2) a,
+.rating-5 li:nth-child(3) a,
+.rating-5 li:nth-child(4) a,
+.rating-5 li:nth-child(5) a {
+  background-position: 100% 0;
+}
+p.missing{
+  float:right;
+  font-family: 'Merriweather', serif;
+  color: #ee2c4c;
+  text-transform: uppercase;
+  letter-spacing: .1em;
+  padding-top: 12px;
+  font-size: 14px;
+ }
+
+.cocktailPhoto img{
+  float:right;
+  max-width: 30%;
+  padding: 20px;
+  clear:right;
+  /*margin-top:-10px;*/
+}
+
 
 p.ingredientsList{
   /*color:#ee2c4c;*/
@@ -169,7 +229,6 @@ p.descrText{
   border: 0;
 }
 
-
 .tags {
   text-align: center;
 }
@@ -225,11 +284,14 @@ p.descrText{
   background-color: rgba(235, 235, 235, .2);
   padding: 20px 20px;
 }
+.cocktail:after { content:""; display:block; clear:both; height:0;  visibility:hidden; }
 
 .cocktail h2 {
   margin: 0;
+  max-width: 100%;
   border-bottom: 1px solid #dedede;
   padding-bottom: 10px;
+  /*padding-right:300px;*/
 }
 
 .cocktail ul {
@@ -283,6 +345,9 @@ p.descrText{
     padding-bottom:10px;
     position:static;
 
+  }
+  .rating a {
+    background-size : cover;
   }
   p.infoText{
     padding-top: 10px;
