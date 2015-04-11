@@ -35,18 +35,14 @@ public class Cocktail extends Model {
     @Transient
     public String message = "";
     @Transient
-    public int ratingValue = this.CalculateRating();
+    public int ratingValue = 0;
 
     @ManyToMany(cascade = CascadeType.PERSIST)
     private List<Ingredients> ingredients;
 
     @OneToMany(cascade = CascadeType.ALL)
-    private List<Rating> rating;
+    private List<Rating> ratingList;
 
-    //@ManyToOne(cascade = CascadeType.ALL)
-    //private List<Double> amount;
-    //public void setAmount(Double amount) {this.amount.add(amount);}
-    //public List<Double> getAmount(){return this.amount;}
 
     /**
      * Aðferð: Bæta nafni við Cocktail hlut
@@ -84,22 +80,12 @@ public class Cocktail extends Model {
     }
 
     /**
-     * Aðferð:
+     * Aðferð: Nær í stjörnugjöf úr Rating lista.
      *
-     * @return:
-     **/
-    public int getRatingValue() {
-        return this.ratingValue;
-    }
-
-
-    /**
-     * Aðferð:
-     *
-     * @return:
+     * @return: Skilar lista af stjörnugjöfum frá Rating lista.
      **/
     public List<Rating> getRating() {
-        return this.rating;
+        return this.ratingList;
     }
 
 
@@ -159,14 +145,15 @@ public class Cocktail extends Model {
         }
 
         //Búum til SQL fyrirspurn sem skilar okkur kokteilum, ásamt hversu mörg hráefni passa og hversu mörg vantar.
-        String sql = "select id, name, description, missing_ingredients from " +
+        String sql = "select id, name, description, preparation, missing_ingredients from " +
                 "(select " +
                 "count(ingredients_id) as matching_ingredients, " +
                 "(select count(*) from cocktail_ingredients as ci0 where ci0.cocktail_id = c.id) as total_ingredients, " +
                 "((select count(*) from cocktail_ingredients as ci0 where ci0.cocktail_id = c.id) - count(ingredients_id)) as missing_ingredients, " +
                 "c.name, " +
                 "c.id, " +
-                "c.description " +
+                "c.description, " +
+                "c.preparation " +
                 "from " +
                 "cocktail c " +
                 "left join " +
@@ -182,6 +169,7 @@ public class Cocktail extends Model {
                     .columnMapping("id", "id")
                     .columnMapping("name", "name")
                     .columnMapping("description", "description")
+                    .columnMapping("preparation", "preparation")
                     .columnMapping("missing_ingredients", "message")
                         .create();
 
@@ -191,25 +179,29 @@ public class Cocktail extends Model {
         return query.findList();
     }
 
-    public int CalculateRating() {
-        return 3;
-        /*int sum = 0;
-        for (Rating r: this.rating) {
-            Logger.info(r.getRating()+"rating--------");
-            sum += r.getRating();
-        }
-        if (rating.size() == 0){
-          return 0;
-        }
-        return sum/this.rating.size();*/
-    }
-
+    /**
+     * Aðferð: Gefur kokteil einkunn, ef einkunn er fyrir til frá notanda er hún yfirskrifuð með nýju gildi
+     *
+     * @param  userid er auðkenni notanda og rating er gildi stjörnugjafar
+     **/
     public void addRating(String userid, int rating){
-        Rating r = new Rating(userid, rating);
-        this.rating.add(r);
+        Rating r = Rating.findUserandRating(this.id,userid);
+        if(r != null){
+            Logger.info("get rating"+ r.getRating());
+            r.setRating(rating);
+        }
+        else{
+            r = new Rating(userid, rating);
+            this.ratingList.add(r);
+        }
         this.save();
     }
 
+    /**
+     * Aðferð: Fyrirspurning á gagnagrunninn, finnur öll auðkenni kokteils út grá Cocktail klasanum.
+     *
+     * @return: Skilar öllum þeim kokteilum sem eru með auðkenni.
+     **/
     public static Cocktail findById(Long cid){
         return Ebean.find(Cocktail.class)
                 .where()

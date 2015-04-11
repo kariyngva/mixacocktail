@@ -30,7 +30,7 @@ public class Global extends GlobalSettings {
         }
         return result;
     }
-    public void onStart(Application app) {
+    /*public void onStart(Application app) {
 
         Logger.info("Application has started");
 
@@ -76,5 +76,5 @@ public class Global extends GlobalSettings {
                 cocktail.save();
             }
         }
-    }
+    }*/
 }
