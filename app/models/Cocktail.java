@@ -145,14 +145,15 @@ public class Cocktail extends Model {
         }
 
         //Búum til SQL fyrirspurn sem skilar okkur kokteilum, ásamt hversu mörg hráefni passa og hversu mörg vantar.
-        String sql = "select id, name, description, missing_ingredients from " +
+        String sql = "select id, name, description, preparation, missing_ingredients from " +
                 "(select " +
                 "count(ingredients_id) as matching_ingredients, " +
                 "(select count(*) from cocktail_ingredients as ci0 where ci0.cocktail_id = c.id) as total_ingredients, " +
                 "((select count(*) from cocktail_ingredients as ci0 where ci0.cocktail_id = c.id) - count(ingredients_id)) as missing_ingredients, " +
                 "c.name, " +
                 "c.id, " +
-                "c.description " +
+                "c.description, " +
+                "c.preparation " +
                 "from " +
                 "cocktail c " +
                 "left join " +
@@ -168,6 +169,7 @@ public class Cocktail extends Model {
                     .columnMapping("id", "id")
                     .columnMapping("name", "name")
                     .columnMapping("description", "description")
+                    .columnMapping("preparation", "preparation")
                     .columnMapping("missing_ingredients", "message")
                         .create();
 

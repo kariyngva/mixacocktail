@@ -156,7 +156,11 @@ p.descrText{
   text-decoration: underline;
 }
 
-
+p.PreperationText{
+  /*color:#ee2c4c;*/
+  font-style: bold;
+  text-decoration: underline;
+}
 
 .search:after { content:""; display:block; clear:both; height:0;  visibility:hidden; }
 .search {

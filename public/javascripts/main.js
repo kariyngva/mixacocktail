@@ -124,10 +124,9 @@
         });
       },  
       autoFocus: true,
-      minLength:3,
+      minLength:2,
 
       change: function (event, ui) {
-          console.log('change');
           if(ui.item)
           {
             canSubmit = true;
@@ -221,7 +220,6 @@
                 )
               .done(function(data) {
                   empty && $('.results').empty();
-                  ;;;window.console&&console.log( data );
                   $('.results').append( generateMarkup(data) );
                 })
               .always(function() {
@@ -229,15 +227,33 @@
                 });
           }
     }
+  /**
+  * Aðferð: Sækir fylki af rating á Json formi, tekur Json gögnin og býr til Markup fyrir hvern kokteil.
+  *
+  **/
+  var getRating = function (){
+      $doc
+          .on('click', '.rating a', function (e) {
+            e.preventDefault();
+            var link = $(this);
+            $.get(
+                link.attr('href')
+              )
+            .done(function(data) {
+                link.parents('.cocktail').replaceWith( generateMarkup( [data] ).find('.cocktail') );
+            });
+          });
+  };
+
  /**
   * Aðferð: Tekur inn fylki af kokteilum á JSON formi
   *
   * @return: Skilar Markup fyrir hvern kokteil í fylkinu
   **/
   var generateMarkup = function( data ) {
-
           var results = $('<div class="rescontainer"></div>');
           for (var i = 0; i < data.length; i++) {
+            console.log('i: ' + i);
               var cjson = data[i],
               message = parseInt( cjson.message ) > 0 ? '<p class="missing">Missing : ' + cjson.message +' Ingredients<p>' : ''
                   ingredients = $('<ul></ul>'),
@@ -256,10 +272,10 @@
                                     '<p class="ingredientsList">' + 'Ingredients : '+ '</p>'+
                                     '<a class="cocktailPhoto">' + '<img src="'+ cjson.imageUrl +'">'  +'</img>' + '</a>' +
                                     '<p class="descrText">Description:<br/></p><p>' + cjson.description + '</p>' +
+                                    '<p class="PreperationText">Preperation:</p><p>' + cjson.preparation + '</p>' +
                                     '<div class="fb-comments" data-href="http://developers.facebook.com/docs/plugins/comments/" data-numposts="5" data-colorscheme="light" xid ="i">' +  '</div>' +
                                     '<a href="/">' +'<p>Click here to view comments' + '</p>' + '</a>' +
-                                  '</div>'  
-
+                                  '</div>'
                                   );
 
               //Iterate over ingredients for given cocktail
@@ -282,5 +298,6 @@
 
   prepSearch();
   prepNav();
+  getRating();
 
 })();

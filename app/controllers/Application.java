@@ -113,7 +113,7 @@ public class Application extends Controller {
 
     public static Result getIngredients(String ing) {
         String s = new String (ing);
-        if (s.length() > 2 ) {
+        if (s.length() > 1 ) {
             return ok( toJson(Ingredients.getIngredients(s)) );
         } else {
             return ok(toJson(ok()) );
