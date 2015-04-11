@@ -38,7 +38,7 @@
                   $('.nav .current').removeClass('current');
                   $(this).addClass('current');
 
-                  getCocktails( cLinkHref, '/' + page,false );
+                  getCocktails( cLinkHref, '/' + page, false );
                   page++;
 
                   if(listofcocktails)
@@ -124,7 +124,7 @@
         });
       },  
       autoFocus: true,
-      minLength:3,
+      minLength:2,
 
       change: function (event, ui) {
           console.log('change');
@@ -144,6 +144,7 @@
             tagList.prepend('<li><span>' + ui.item.value + '</span><a class="removetag" href="#removetag">x</a></li>');
             searchInput.val('');
             getCocktails( form.attr('action'), '?' + getTagList(), true );
+            saveIngredients();
           }
         return false;
       }
@@ -185,8 +186,8 @@
                     $('.results').empty();
                   }
 
-                  getCocktails( form.attr('action'), '?' + getTagList(),true );
-
+                  saveIngredients();
+                  getCocktails( form.attr('action'), '?' + getTagList(), true );
                 });
     };
  /**
@@ -228,7 +229,27 @@
                   $html.removeClass('ajax-wait');
                 });
           }
-    }
+    };
+
+  
+  /**
+  * Aðferð: Sækir fylki af rating á Json formi, tekur Json gögnin og býr til Markup fyrir hvern kokteil.
+  *
+  **/
+  var getRating = function (){
+      $doc
+          .on('click', '.rating a', function (e) {
+            e.preventDefault();
+            var link = $(this);
+            $.get(
+                link.attr('href')
+              )
+            .done(function(data) {
+                link.parents('.cocktail').replaceWith( generateMarkup( [data] ).find('.cocktail') );
+            });
+          });
+  };
+
  /**
   * Aðferð: Tekur inn fylki af kokteilum á JSON formi
   *
@@ -256,10 +277,10 @@
                                     '<p class="ingredientsList">Ingredients : </p>'+
                                     '<a class="cocktailPhoto">' + '<img src="'+ cjson.imageUrl +'"></img></a>' +
                                     '<p class="descrText">Description:<br/></p><p>' + cjson.description + '</p>' +
+                                    '<p class="PreperationText">Preperation:</p><p>' + cjson.preparation + '</p>' +
                                     '<div class="fb-comments" data-href="http://developers.facebook.com/docs/plugins/comments/" data-numposts="5" data-colorscheme="light" xid ="i">' +  '</div>' +
                                     '<a href="/cocktail/' + cjson.id + '"><p>Click here to view comments</p></a>' +
-                                  '</div>'  
-
+                                  '</div>'
                                   );
 
               //Iterate over ingredients for given cocktail
@@ -276,11 +297,68 @@
           return results;
     };
 
+  /**
+    * Aðferð: stofnar tengingu við Facebook og keyrir upp Mix a cocktail facebook appið
+    **/
+    var initFacebook = function () {
+            $.ajaxSetup({ cache: true });
+            $.getScript('//connect.facebook.net/en_US/all.js', function() {
+                FB.init({
+                  appId      : '1575377082749029',
+                  cookie     : true,  // enable cookies to allow the server to access
+                                      // the session
+                  xfbml      : true,  // parse social plugins on this page
+                  version    : 'v2.2' // use version 2.2
+                });
+
+                getSavedIngredients();
+              });
+      };
+
+
+  /**
+    * Aðferð: Vistar þau hráefni sem notandi hefur slegið inn (þ.e. þau sem eru í .tags ul lista) í gagnagrunn.
+    **/
+    var saveIngredients = function () {
+            var userId = FB.getUserID();
+            if ( userId )
+            {
+              $.get(
+                    '/saveIngredients/' + userId + '/' + getTagList()
+                  );
+            }
+      };
+
+  /**
+    * Aðferð: Sækir þau hráefni sem notandi hefur áður slegið inn, í gagnagrunn.
+    **/
+  var getSavedIngredients = function () {
+          var userId = FB.getUserID();
+          if ( userId )
+          {
+            $html.addClass('ajax-wait');
+            $.get(
+                  '/getSavedIngredients/' + userId
+                )
+              .done(function(data) {
+                  for (var i = 0; i < data.length; i++) {
+                      $('.tags ul').prepend('<li><span>' + data[i].name + '</span><a class="removetag" href="#removetag">x</a></li>');
+                      //perform search?
+                  };
+                })
+              .always(function() {
+                  $html.removeClass('ajax-wait');
+                });
+          }
+    };
+
   // =========================================================================================================================
   //   Run Init Actions
   // =========================================================================================================================
-
+  // saveIngredients();
   prepSearch();
   prepNav();
+  getRating();
+  initFacebook();
 
 })();
