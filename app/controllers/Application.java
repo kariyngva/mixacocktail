@@ -93,6 +93,15 @@ public class Application extends Controller {
         return ok( toJson(Cocktail.getAllCocktails(page)) );
     }
 
+    public static Result getCocktail(long id){
+        Cocktail cocktails = Cocktail.findById(id);
+        return ok(cocktail.render(cocktails));
+
+
+    }
+
+
+
     /**
      * Aðferð: Finnur kokteil út frá innslegnu hráefni og splittar hráefninu með bandstriki til að auðvelda aðskilnað
      *         á mismunandi hráefnum í js.

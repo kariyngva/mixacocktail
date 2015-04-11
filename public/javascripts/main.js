@@ -253,11 +253,11 @@
                                       '<li><a href="/updateRating/' + cjson.id + '/5">5</a></li>' +
                                       '</ul>' +
                                     '</div>' +                            
-                                    '<p class="ingredientsList">' + 'Ingredients : '+ '</p>'+
-                                    '<a class="cocktailPhoto">' + '<img src="'+ cjson.imageUrl +'">'  +'</img>' + '</a>' +
+                                    '<p class="ingredientsList">Ingredients : </p>'+
+                                    '<a class="cocktailPhoto">' + '<img src="'+ cjson.imageUrl +'"></img></a>' +
                                     '<p class="descrText">Description:<br/></p><p>' + cjson.description + '</p>' +
                                     '<div class="fb-comments" data-href="http://developers.facebook.com/docs/plugins/comments/" data-numposts="5" data-colorscheme="light" xid ="i">' +  '</div>' +
-                                    '<a href="/">' +'<p>Click here to view comments' + '</p>' + '</a>' +
+                                    '<a href="/cocktail/' + cjson.id + '"><p>Click here to view comments</p></a>' +
                                   '</div>'  
 
                                   );
