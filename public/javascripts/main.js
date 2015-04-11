@@ -38,7 +38,7 @@
                   $('.nav .current').removeClass('current');
                   $(this).addClass('current');
 
-                  getCocktails( cLinkHref, '/' + page,false );
+                  getCocktails( cLinkHref, '/' + page, false );
                   page++;
 
                   if(listofcocktails)
@@ -122,12 +122,11 @@
             response( results );
           }
         });
-      },  
+      },
       autoFocus: true,
       minLength:3,
 
       change: function (event, ui) {
-          console.log('change');
           if(ui.item)
           {
             canSubmit = true;
@@ -144,6 +143,7 @@
             tagList.prepend('<li><span>' + ui.item.value + '</span><a class="removetag" href="#removetag">x</a></li>');
             searchInput.val('');
             getCocktails( form.attr('action'), '?' + getTagList(), true );
+            saveIngredients();
           }
         return false;
       }
@@ -185,8 +185,8 @@
                     $('.results').empty();
                   }
 
-                  getCocktails( form.attr('action'), '?' + getTagList(),true );
-
+                  saveIngredients();
+                  getCocktails( form.attr('action'), '?' + getTagList(), true );
                 });
     };
  /**
@@ -221,21 +221,20 @@
                 )
               .done(function(data) {
                   empty && $('.results').empty();
-                  ;;;window.console&&console.log( data );
                   $('.results').append( generateMarkup(data) );
                 })
               .always(function() {
                   $html.removeClass('ajax-wait');
                 });
           }
-    }
+    };
+
  /**
   * Aðferð: Tekur inn fylki af kokteilum á JSON formi
   *
   * @return: Skilar Markup fyrir hvern kokteil í fylkinu
   **/
   var generateMarkup = function( data ) {
-
           var results = $('<div class="rescontainer"></div>');
           for (var i = 0; i < data.length; i++) {
               var cjson = data[i],
@@ -271,11 +270,67 @@
           return results;
     };
 
+  /**
+    * Aðferð: stofnar tengingu við Facebook og keyrir upp Mix a cocktail facebook appið
+    **/
+    var initFacebook = function () {
+            $.ajaxSetup({ cache: true });
+            $.getScript('//connect.facebook.net/en_US/all.js', function() {
+                FB.init({
+                  appId      : '1575377082749029',
+                  cookie     : true,  // enable cookies to allow the server to access
+                                      // the session
+                  xfbml      : true,  // parse social plugins on this page
+                  version    : 'v2.2' // use version 2.2
+                });
+
+                getSavedIngredients();
+              });
+      };
+
+
+  /**
+    * Aðferð: Vistar þau hráefni sem notandi hefur slegið inn (þ.e. þau sem eru í .tags ul lista) í gagnagrunn.
+    **/
+    var saveIngredients = function () {
+            var userId = FB.getUserID();
+            if ( userId )
+            {
+              $.get(
+                    '/saveIngredients/' + userId + '/' + getTagList()
+                  );
+            }
+      };
+
+  /**
+    * Aðferð: Sækir þau hráefni sem notandi hefur áður slegið inn, í gagnagrunn.
+    **/
+  var getSavedIngredients = function () {
+          var userId = FB.getUserID();
+          if ( userId )
+          {
+            $html.addClass('ajax-wait');
+            $.get(
+                  '/getSavedIngredients/' + userId
+                )
+              .done(function(data) {
+                  for (var i = 0; i < data.length; i++) {
+                      $('.tags ul').prepend('<li><span>' + data[i].name + '</span><a class="removetag" href="#removetag">x</a></li>');
+                      //perform search?
+                  };
+                })
+              .always(function() {
+                  $html.removeClass('ajax-wait');
+                });
+          }
+    };
+
   // =========================================================================================================================
   //   Run Init Actions
   // =========================================================================================================================
-
+  // saveIngredients();
   prepSearch();
   prepNav();
+  initFacebook();
 
 })();

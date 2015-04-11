@@ -6,6 +6,7 @@
  */
 package controllers;
 
+import models.UserIngredient;
 import play.*;
 import models.Ingredients;
 import models.Cocktail;
@@ -37,9 +38,7 @@ import static play.libs.Json.toJson;
 public class Application extends Controller {
 
     public static Result index() {
-
-        return ok(index.render("Your new application is ready.", 10));
-
+        return ok( index.render() );
     }
 
     public static Result addCocktail() {
@@ -206,5 +205,37 @@ public class Application extends Controller {
         return ok("Hello " + userName + ", you are seeing a public page");
     }
 
+    public static Result saveIngredients(String userId, String ingredients ) throws UnsupportedEncodingException {
+        UserIngredient ui = UserIngredient.findById( userId );
 
+        if ( ingredients != null )
+        {
+            String[] parameters = ingredients.split("-");
+
+            for (int i = 0; i < parameters.length; i++) {
+                parameters[i] = URLDecoder.decode(parameters[i], "UTF-8");
+                Logger.info( parameters[i] );
+            }
+
+            if ( ui == null ) {
+                ui = new UserIngredient( userId );
+            }
+
+            ui.addUserIngredients( Ingredients.searchByNames( parameters ) );
+        }
+        else if ( ui != null )
+        {
+            ui.clearUserIngredients();
+        }
+
+        return ok();
+    }
+
+    public static Result getSavedIngredients(String userId) {
+        UserIngredient ui = UserIngredient.findById( userId );
+        if ( ui != null ) {
+            return ok( toJson( ui.getUserIngredients() ) );
+        }
+        return ok();
+    }
 }
