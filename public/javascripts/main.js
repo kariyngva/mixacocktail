@@ -255,7 +255,7 @@
               message = parseInt( cjson.message ) > 0 ? '<p class="missing">Missing : ' + cjson.message +' Ingredients<p>' : ''
                   ingredients = $('<ul class="ingredients"></ul>'),
                   cocktailElm = $('<div class="cocktail ">' +
-                                    message + 
+                                    message +
                                     '<h2>' + cjson.name + '</h2>' +
                                     '<div class="rating rating-' + cjson.ratingValue + '">' +
                                       '<ul>' +
@@ -265,13 +265,12 @@
                                       '<li><a href="/updateRating/' + cjson.id + '/4">4</a></li>' +
                                       '<li><a href="/updateRating/' + cjson.id + '/5">5</a></li>' +
                                       '</ul>' +
-                                    '</div>' +                            
+                                    '</div>' +
                                     '<h4 class="ingredientsList">Ingredients: </h4>'+
                                     '<a class="cocktailPhoto">' + '<img src="'+ cjson.imageUrl +'"></img></a>' +
                                     '<h4 class="descrText">Description:<br/></h4><p>' + cjson.description + '</p>' +
                                     '<h4 class="PreperationText">Preperation:</h4><p>' + cjson.preparation + '</p>' +
-                                    '<div class="fb-comments" data-href="http://developers.facebook.com/docs/plugins/comments/" data-numposts="5" data-colorscheme="light" xid ="i">' +  '</div>' +
-                                    '<a href="/cocktail/' + cjson.id + '"><p>Click here to view comments</p></a>' +
+                                    '<p><a class="comment" href="/cocktail/' + cjson.id + '">Tell us what you think!</a></p>' +
                                   '</div>'
                                   );
 
@@ -285,7 +284,7 @@
               // cocktailElm.prepend( ingredients );
               ingredients.insertAfter( cocktailElm.find('.ingredientsList') );
               results.append( cocktailElm );
-          } 
+          }
           return results;
     };
 
