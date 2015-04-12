@@ -148,23 +148,19 @@ p.missing{
 }
 
 
-p.ingredientsList{
+.ingredientsList,
+.PreperationText,
+.descrText{
   /*color:#ee2c4c;*/
-  font-style: bold;
-  text-decoration: underline;
+  font-weight: bold;
+  text-decoration: none;
+  text-transform: none;
+  letter-spacing: 0;
+  margin-bottom: 0;
+  color: #026a10;
+}
 
-}
-p.descrText{
-  /*color:#ee2c4c;*/
-  font-style: bold;
-  text-decoration: underline;
-}
 
-p.PreperationText{
-  /*color:#ee2c4c;*/
-  font-style: bold;
-  text-decoration: underline;
-}
 
 .search:after { content:""; display:block; clear:both; height:0;  visibility:hidden; }
 .search {
@@ -304,6 +300,14 @@ p.PreperationText{
 .cocktail ul {
   list-style: none;
   padding-left: 1em;
+}
+
+.cocktail .ingredients li:before {
+    content:'\2022';
+    color: red;
+    /*color: #026a10;*/
+    padding-left: 1em;
+    padding-right: 1em;
 }
 
 .nav ul{
