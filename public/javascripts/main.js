@@ -82,65 +82,74 @@
               });
 
   };
-
-
-
-  /**
-   * Aðferð: Bindir atburði við leitar form, tekur streng úr leitarformi og setur í hráefna-lista
-   *         Framkvæmir leit út frá hráefnalista
-   **/
+    /**
+     * Aðferð: Bindir atburði við leitar form, tekur streng úr leitarformi og setur í hráefna-lista
+     *         Framkvæmir leit út frá hráefnalista
+     **/
   var prepSearch = function () {
           var form = $('.search form'),
               searchInput = form.find('.fi_txt input'),
               tagList = $('.tags ul');
 
-          searchInput.autocomplete({
+    var availableTags = [
+      "Rum",
+      "Vodka",
+      "Tequila",
+      "Gin",
+      "Passoa",
+      "Coke",
+      "Strawberries",
+      "Tonic",
+      "Sugar"
+    ];
+    searchInput.autocomplete({
 
-            source: function(request, response){
+      source: function(request, response){
 
 
-              $.ajax({
-                url: '/getIngredients/' + request.term,
-                dataType: "json",
-                data:request.term,
+        $.ajax({
+          url: '/getIngredients/' + request.term,
+          dataType: "json",
+          data:request.term,
 
 
-                success: function( data ) {
-                  var results = [];
-                  for (var i = 0; i < data.length; i++) {
-                    delete data[i].id;
-                    results.push(data[i].name);
-                  };
-                  response( results );
-                }
-              });
-            },
-            autoFocus: true,
-            minLength:2,
+          success: function( data ) {
+            var results = [];
+            for (var i = 0; i < data.length; i++) {
+              delete data[i].id;
+              results.push(data[i].name);
+            };
+            response( results );
+          }
+        });
+      },  
+      autoFocus: true,
+      minLength:2,
 
-            change: function (event, ui) {
-                if(ui.item)
-                {
-                  canSubmit = true;
-                }
-                else
-                {
-                  canSubmit = false;
-                }
+      change: function (event, ui) {
+          console.log('change');
+          if(ui.item)
+          {
+            canSubmit = true;
+          }
+          else
+          {
+            canSubmit = false;
+          }
 
-              },
-            select : function(event, ui) {
-                if( $('.searchLink').is('.current')) //ef leit er valin
-                {
-                  tagList.prepend('<li><span>' + ui.item.value + '</span><a class="removetag" href="#removetag">x</a></li>');
-                  searchInput.val('');
-                  getCocktails( form.attr('action'), '?' + getTagList(), true );
-                  saveIngredients();
-                }
-              return false;
-            }
+        },
+      select : function(event, ui) {
+          if( $('.searchLink').is('.current')) //ef leit er valin
+          {
+            tagList.prepend('<li><span>' + ui.item.value + '</span><a class="removetag" href="#removetag">x</a></li>');
+            searchInput.val('');
+            getCocktails( form.attr('action'), '?' + getTagList(), true );
+            saveIngredients();
+          }
+        return false;
+      }
 
-          });
+    });
 
           form
               .on('submit', function (e) {
@@ -181,8 +190,6 @@
                   getCocktails( form.attr('action'), '?' + getTagList(), true );
                 });
     };
-
-
  /**
   * Aðferð: Breytir hráefnalista í streng þar sem hráefnin eru aðskilin með bandstriki
   *
@@ -215,6 +222,7 @@
                 )
               .done(function(data) {
                   empty && $('.results').empty();
+                  ;;;window.console&&console.log( data );
                   $('.results').append( generateMarkup(data) );
                 })
               .always(function() {
@@ -223,7 +231,7 @@
           }
     };
 
-
+  
   /**
   * Aðferð: Sækir fylki af rating á Json formi, tekur Json gögnin og býr til Markup fyrir hvern kokteil.
   *
@@ -255,7 +263,7 @@
               message = parseInt( cjson.message ) > 0 ? '<p class="missing">Missing : ' + cjson.message +' Ingredients<p>' : ''
                   ingredients = $('<ul class="ingredients"></ul>'),
                   cocktailElm = $('<div class="cocktail ">' +
-                                    message +
+                                    message + 
                                     '<h2>' + cjson.name + '</h2>' +
                                     '<div class="rating rating-' + cjson.ratingValue + '">' +
                                       '<ul>' +
@@ -265,12 +273,12 @@
                                       '<li><a href="/updateRating/' + cjson.id + '/4">4</a></li>' +
                                       '<li><a href="/updateRating/' + cjson.id + '/5">5</a></li>' +
                                       '</ul>' +
-                                    '</div>' +
+                                    '</div>' +                            
                                     '<h4 class="ingredientsList">Ingredients: </h4>'+
                                     '<a class="cocktailPhoto">' + '<img src="'+ cjson.imageUrl +'"></img></a>' +
                                     '<h4 class="descrText">Description:<br/></h4><p>' + cjson.description + '</p>' +
                                     '<h4 class="PreperationText">Preperation:</h4><p>' + cjson.preparation + '</p>' +
-                                    '<p><a class="comments" href="/cocktail/' + cjson.id + '">Tell us what you think!</a></p>' +
+                                    '<p><a class="comments" href="/cocktail/' + cjson.id + '">Click here to view comments</a></p>' +
                                   '</div>'
                                   );
 
@@ -284,7 +292,7 @@
               // cocktailElm.prepend( ingredients );
               ingredients.insertAfter( cocktailElm.find('.ingredientsList') );
               results.append( cocktailElm );
-          }
+          } 
           return results;
     };
 
@@ -314,9 +322,8 @@
             var userId = FB.getUserID();
             if ( userId )
             {
-              var ingredients = getTagList().length > 0 ? getTagList() : '';
               $.get(
-                    '/saveIngredients/' + userId + '/' + ingredients
+                    '/saveIngredients/' + userId + '/' + getTagList()
                   );
             }
       };
@@ -335,7 +342,7 @@
               .done(function(data) {
                   for (var i = 0; i < data.length; i++) {
                       $('.tags ul').prepend('<li><span>' + data[i].name + '</span><a class="removetag" href="#removetag">x</a></li>');
-                      getCocktails( '/findCocktailByIngredient', '?' + getTagList(), true );
+                      //perform search?
                   };
                 })
               .always(function() {
@@ -347,7 +354,7 @@
   // =========================================================================================================================
   //   Run Init Actions
   // =========================================================================================================================
-
+  // saveIngredients();
   prepSearch();
   prepNav();
   getRating();
