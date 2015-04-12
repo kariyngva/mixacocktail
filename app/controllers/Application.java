@@ -95,8 +95,6 @@ public class Application extends Controller {
     public static Result getCocktail(long id){
         Cocktail cocktails = Cocktail.findById(id);
         return ok(cocktail.render(cocktails));
-
-
     }
 
 
@@ -228,7 +226,7 @@ public class Application extends Controller {
     public static Result saveIngredients(String userId, String ingredients ) throws UnsupportedEncodingException {
         UserIngredient ui = UserIngredient.findById( userId );
 
-        if ( ingredients != null )
+        if ( !ingredients.equals("destroy") )
         {
             String[] parameters = ingredients.split("-");
 
@@ -243,7 +241,7 @@ public class Application extends Controller {
 
             ui.addUserIngredients( Ingredients.searchByNames( parameters ) );
         }
-        else if ( ui != null )
+        else// if ( ui != null )
         {
             ui.clearUserIngredients();
         }

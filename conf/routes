@@ -10,6 +10,7 @@ GET     /cocktails                              controllers.Application.getCockt
 POST    /cocktails                              controllers.Application.addCocktail()
 GET     /allCocktails/:page                     controllers.Application.getAllCocktails(page: Integer)
 GET     /saveIngredients/:userId/:ingredients   controllers.Application.saveIngredients(userId: String, ingredients: String)
+GET     /saveIngredients/:userId/               controllers.Application.saveIngredients(userId: String, ingredients = "destroy")
 GET     /getSavedIngredients/:userId            controllers.Application.getSavedIngredients(userId: String)
 
 

@@ -299,7 +299,6 @@ p.PreperationText{
   max-width: 100%;
   border-bottom: 1px solid #dedede;
   padding-bottom: 10px;
-  /*padding-right:300px;*/
 }
 
 .cocktail ul {
@@ -312,6 +311,42 @@ p.PreperationText{
   text-align: center;
   font-size: 24px;
   line-height: 30px;
+}
+
+.comments {
+  text-decoration: none;
+  color: #f22649;
+  padding-left: 5px;
+}
+.comments:after {
+    content: "....";
+    display: inline-block;
+    max-width: 0;
+    overflow: hidden;
+    transition: all .5s ease-in-out;
+    vertical-align: bottom;
+}
+.comments:before {
+    content: "\00a0";
+    display: inline-block;
+    width: 28px;
+    height: 19px;
+    margin: -3px 10px -3px 0;
+    vertical-align: middle;
+    background: url(/assets/images/talk-bubble.png) 0 0 no-repeat;
+    transition: all .2s ease-in-out;
+}
+
+.comments:hover:before,
+.comments:focus:before,
+.comments:active:before {
+  background-position: 0 100%;
+}
+
+.comments:hover:after,
+.comments:focus:after,
+.comments:active:after {
+  min-width: 30px;
 }
 
 .nav li{
@@ -422,11 +457,11 @@ p.PreperationText{
   }
 
   ::-moz-placeholder {  /* Firefox 19+ */
-     text-align: center;  
+     text-align: center;
   }
 
-  :-ms-input-placeholder {  
-     text-align: center; 
+  :-ms-input-placeholder {
+     text-align: center;
   }
   /**** results ****/
   .results {
