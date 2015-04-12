@@ -13,9 +13,15 @@
                     <li><a href="/updateRating/ + @cocktail.id + /5">5</a></li>
                 </ul>
             </div>
-            <p class="ingredientsList">  Ingredients :  </p>
-            <a class="cocktailPhoto"> <img src="@cocktail.imageUrl"> </img>  </a>
-            <p class="descrText">Description:<br/></p><p> @cocktail.description  </p>
+            <h4 class="ingredientsList">Ingredients: </h4>
+            <ul class ="ingredients">
+            @for(ingredient <- cocktail.getIngredients()){
+                <li>@ingredient.name</li>
+            }
+            </ul>
+            <a class="cocktailPhoto"><img src="@cocktail.imageUrl"></img></a>
+            <h4 class="descrText">Description:<br/></h4><p>@cocktail.description</p>
+            <h4 class="PreperationText">Preperation:</h4><p>@cocktail.preparation</p>
             <div class="fb-comments" data-href="http://developers.facebook.com/docs/plugins/comments/" data-numposts="5" data-colorscheme="light" xid ="i">  </div>
         </div>
     </section>

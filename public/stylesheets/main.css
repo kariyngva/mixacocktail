@@ -3,12 +3,14 @@
 body {
   font-family: 'Open Sans', sans-serif;
 }
- h1,h2, h3, h4{
+ h1,h2, h3{
   font-family: 'Merriweather', serif;
   color: #ee2c4c;
   text-transform: uppercase;
   letter-spacing: .1em;
  }
+
+
 /**** logo/header ****/
 .logo img {
   max-height: 100px;
@@ -157,7 +159,7 @@ p.missing{
   text-transform: none;
   letter-spacing: 0;
   margin-bottom: 0;
-  color: #026a10;
+  color: black;
 }
 
 
@@ -362,11 +364,19 @@ p.missing{
   color: #000;
 }
 
+footer {
+  max-width: 50%;
+  margin: 0 auto;
+  font-size: 10px;
+
+
+}
+
 @media screen and (max-width: 525px)
 {
 
   body{font-family: 'Open Sans', sans-serif;}
-  h1,h2, h3, h4 {
+  h1,h2, h3{
     font-family: 'Merriweather', serif;
     color: #ee2c4c;
     text-transform: uppercase;
