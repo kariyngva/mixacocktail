@@ -270,7 +270,7 @@
                                     '<a class="cocktailPhoto">' + '<img src="'+ cjson.imageUrl +'"></img></a>' +
                                     '<h4 class="descrText">Description:<br/></h4><p>' + cjson.description + '</p>' +
                                     '<h4 class="PreperationText">Preperation:</h4><p>' + cjson.preparation + '</p>' +
-                                    '<p><a class="comment" href="/cocktail/' + cjson.id + '">Tell us what you think!</a></p>' +
+                                    '<p><a class="comments" href="/cocktail/' + cjson.id + '">Tell us what you think!</a></p>' +
                                   '</div>'
                                   );
 
