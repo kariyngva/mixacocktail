@@ -38,10 +38,20 @@ import static play.libs.Json.toJson;
 
 public class Application extends Controller {
 
+    /**
+     * Aðferð: Birtir forsíðu vefsins.
+     *
+     * @return: Skilar Result sem er forsíða vefsins.
+     **/
     public static Result index() {
         return ok( index.render() );
     }
 
+    /**
+     * Aðferð: Býr til og vistar nýjan Cocktail hlut
+     *
+     * @return: Skilar notanda á yfirlitssíðu yfir kokteila.
+     **/
     public static Result addCocktail() {
         Cocktail cocktail = new Cocktail();
         Map<String, String[]> map = request().body().asFormUrlEncoded();
@@ -70,7 +80,6 @@ public class Application extends Controller {
         cocktail.setName(cname[0]);
         cocktail.save();
         return redirect(routes.Application.getCocktails());
-
     }
 
     /**
