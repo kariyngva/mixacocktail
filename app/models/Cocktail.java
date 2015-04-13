@@ -10,7 +10,6 @@ import com.avaje.ebean.*;
 import com.avaje.ebean.Query;
 import play.Logger;
 import play.db.ebean.Model;
-import scala.collection.immutable.Map;
 import javax.persistence.Transient;
 import javax.persistence.*;
 import java.util.List;

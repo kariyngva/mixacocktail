@@ -1,3 +1,9 @@
+/**
+ * @author: Hópur 7; Kári Yngva, Elsa Mjöll og Rakel Björt
+ * @since: 03.02.15
+ *
+ * Klasinn geymir hráefni fyrir notenda sem UserIngredient hlut sem erfir frá Model.
+ */
 package models;
 
 import com.avaje.ebean.Ebean;
@@ -19,10 +25,14 @@ public class UserIngredient extends Model {
     @ManyToMany(cascade = CascadeType.ALL)
     private List<Ingredients> ingredients;
 
+    /**
+     * Aðferð: Tengir saman hráefni og facebook notanda.
+     *
+     * @param userid er facebook auðkenni notanda
+     **/
     public UserIngredient(String userid) {
         this.userid = userid;
     }
-
 
     /**
      * Aðferð: Bætir hráefni við Ingredients lista notanda.
@@ -34,11 +44,14 @@ public class UserIngredient extends Model {
         this.save();
     }
 
+    /**
+     * Aðferð: Hreinsar hráefnalista fyrir notanda og vistar UserIngredient hlutinn.
+     *
+     **/
     public void clearUserIngredients() {
         this.ingredients.clear();
         this.save();
     }
-
 
     /**
      * Aðferð: Nær í hráefni úr Ingredient lista notanda.

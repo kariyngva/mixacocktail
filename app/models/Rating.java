@@ -8,7 +8,6 @@
 package models;
 
 import com.avaje.ebean.Ebean;
-import play.Logger;
 import play.db.ebean.Model;
 
 import javax.persistence.*;
