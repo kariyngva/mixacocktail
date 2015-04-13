@@ -10,10 +10,13 @@
   // =========================================================================================================================
   //   Actions
   // =========================================================================================================================
-    /**
-     * Aðferð: Bindur atburði við hlekki valmyndar og framkvæmir leitir
-     *
-     **/
+
+
+
+  /**
+   * Aðferð: Bindur atburði við hlekki valmyndar og framkvæmir leitir
+   *
+   **/
   var prepNav = function(){
           var links = $('.nav');
           var cLink = links.find('.list');
@@ -22,6 +25,7 @@
           var sLinkHref = cLink.attr('href');
           var page = 0;
           var listofcocktails;
+
           //fyrir listofcocktails takkann, athugum hvort hann sé með klasann current
           //ákveðið margar kokteil niðurstöður birtast, load-ast meiri kokteilar
           //þegar scrollað er á neðsta part síðunar.
@@ -56,6 +60,7 @@
                   });
                 }
               });
+
           //fyrir Search takkann, athugum hvort hann sé með klasann current
           sLink
               .on('click', function(e){
@@ -82,10 +87,13 @@
               });
 
   };
-    /**
-     * Aðferð: Bindir atburði við leitar form, tekur streng úr leitarformi og setur í hráefna-lista
-     *         Framkvæmir leit út frá hráefnalista
-     **/
+
+
+
+  /**
+   * Aðferð: Bindir atburði við leitar form, tekur streng úr leitarformi og setur í hráefna-lista
+   *         Framkvæmir leit út frá hráefnalista
+   **/
   var prepSearch = function () {
           var form = $('.search form'),
               searchInput = form.find('.fi_txt input'),
@@ -129,10 +137,14 @@
             select : function(event, ui) {
                 if( $('.searchLink').is('.current')) //ef leit er valin
                 {
-                  tagList.prepend('<li><span>' + ui.item.value + '</span><a class="removetag" href="#removetag">x</a></li>');
+                  if ( getTagList().indexOf( ui.item.value ) === -1 )
+                  {
+                    tagList.prepend('<li><span>' + ui.item.value + '</span><a class="removetag" href="#removetag">x</a></li>');
+                    getCocktails( form.attr('action'), '?' + getTagList(), true );
+                    saveIngredients();
+                  }
+
                   searchInput.val('');
-                  getCocktails( form.attr('action'), '?' + getTagList(), true );
-                  saveIngredients();
                 }
               return false;
             }
@@ -298,6 +310,8 @@
           return results;
     };
 
+
+
   /**
     * Aðferð: stofnar tengingu við Facebook og keyrir upp Mix a cocktail facebook appið
     **/
@@ -317,6 +331,7 @@
       };
 
 
+
   /**
     * Aðferð: Vistar þau hráefni sem notandi hefur slegið inn (þ.e. þau sem eru í .tags ul lista) í gagnagrunn.
     **/
@@ -324,12 +339,14 @@
             var userId = FB.getUserID();
             if ( userId )
             {
-              var ingredients = getTagList().length > 0 ? getTagList() : '';
+              var ingredients = getTagList().length > 0 ? getTagList() : 'destroy';
               $.get(
                     '/saveIngredients/' + userId + '/' + ingredients
                   );
             }
       };
+
+
 
   /**
     * Aðferð: Sækir þau hráefni sem notandi hefur áður slegið inn, í gagnagrunn.
@@ -353,6 +370,7 @@
                 });
           }
     };
+
 
   // =========================================================================================================================
   //   Run Init Actions

@@ -90,40 +90,18 @@ public class Application extends Controller {
      **/
     public static Result getAllCocktails(int page) {
         List<Cocktail> allCocktails = Cocktail.getAllCocktails(page);
-        for(Cocktail c : allCocktails)
-        {
-            int sum = 0;
-            for( Rating cr : c.getRating() )
-            {
-                sum += cr.getRating();
-            }
-
-            if( c.getRating().size() > 0 )
-            {
-                sum = sum/c.getRating().size();
-            }
-            c.ratingValue = sum;
-        }
         return ok( toJson( allCocktails ) );
     }
 
+    /**
+     * Aðferð: Sækir kokteil eftir auðkenni (id).
+     *
+     * @return: Vefsíðu sem birtir upplýsingar um kokteil.
+     **/
     public static Result getCocktail(long id){
         Cocktail singleCocktail = Cocktail.findById(id);
-        int sum = 0;
-        for( Rating cr : singleCocktail.getRating() )
-        {
-            sum += cr.getRating();
-        }
-
-        if( singleCocktail.getRating().size() > 0 )
-        {
-            sum = sum/singleCocktail.getRating().size();
-        }
-
-        return ok( cocktail.render( singleCocktail, sum ) );
+        return ok( cocktail.render( singleCocktail ) );
     }
-
-
 
     /**
      * Aðferð: Finnur kokteil út frá innslegnu hráefni og splittar hráefninu með bandstriki til að auðvelda aðskilnað
@@ -154,6 +132,12 @@ public class Application extends Controller {
         return ok( toJson(results) );
     }
 
+    /**
+     * Aðferð: Tekur inn streng sem er hluti úr nafni hráefnis eða heilt nafn hráefnis og
+     *         leitar að hráefnum sem innihalda hluta eða allan strenginn.
+     *
+     * @return: Skilar fylki JSON-Ingredients hluta
+     **/
     public static Result getIngredients(String ing) {
         String s = new String (ing);
         if (s.length() > 1 ) {
@@ -164,9 +148,9 @@ public class Application extends Controller {
     }
 
     /**
-     * Aðferð: Tekur inn userID og leyfir notenda að gefa kokteil einkunn
+     * Aðferð: Tekur inn userID, einkunn og auðkenni kokteils og leyfir notenda að gefa kokteil einkunn.
      *
-     * @return: JSON Result
+     * @return: Uppfærður JSON hlutur fyrir kokteilinn gefið var einkunn
      **/
     public Result updateRating(Long cid, int rating, String userid) {
         Cocktail cocktail = Cocktail.findById(cid);
@@ -181,7 +165,7 @@ public class Application extends Controller {
             if(cocktail.getRating().size() > 0){
                 sum = sum/cocktail.getRating().size();
             }
-            cocktail.ratingValue = sum;
+            cocktail.updateRatingValue(sum);
         }
         return ok( toJson( cocktail ) );
     }
@@ -246,6 +230,13 @@ public class Application extends Controller {
         return ok("Hello " + userName + ", you are seeing a public page");
     }
 
+    /**
+     * Aðferð: Tekur inn Facebook auðkenni notanda ásamt streng sem inniheldur annaðhvort "destroy"
+     *          eða 1 eða fleiri hráefni. Hráefnin notanda eru vistuð í gagnagrunn sé ingredients
+     *          ekki strengurinn "destroy".
+     *
+     * @return: skilar tómri HTTP niðurstöðu.
+     **/
     public static Result saveIngredients(String userId, String ingredients ) throws UnsupportedEncodingException {
         UserIngredient ui = UserIngredient.findById( userId );
 
@@ -264,7 +255,7 @@ public class Application extends Controller {
 
             ui.addUserIngredients( Ingredients.searchByNames( parameters ) );
         }
-        else// if ( ui != null )
+        else
         {
             ui.clearUserIngredients();
         }
@@ -272,6 +263,13 @@ public class Application extends Controller {
         return ok();
     }
 
+    /**
+     * Aðferð: Tekur inn strenginn userId sem er facebook auðkenni notanda.
+     *         Skilar JSON fylki af ingredients hlutum séu til gögn fyrir notanda með
+     *         auðkennið userId.
+     *
+     * @return: Skilar JSON hlut af hráefnum ef gögn eru til annars tómri niðurstöðu.
+     **/
     public static Result getSavedIngredients(String userId) {
         UserIngredient ui = UserIngredient.findById( userId );
         if ( ui != null ) {

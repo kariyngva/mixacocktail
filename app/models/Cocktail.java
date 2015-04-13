@@ -34,7 +34,8 @@ public class Cocktail extends Model {
 
     @Transient
     public String message = "";
-    @Transient
+
+    @Column(columnDefinition = "integer default 0")
     public int ratingValue = 0;
 
     @ManyToMany(cascade = CascadeType.PERSIST)
@@ -194,6 +195,16 @@ public class Cocktail extends Model {
             r = new Rating(userid, rating);
             this.ratingList.add(r);
         }
+        this.save();
+    }
+
+    /**
+     * Aðferð: Uppfærir gildi ratingValue og vistar Cocktail hlutinn.
+     *
+     * @param  newRating er ný einkunn fyrir Cocktail hlutinn.
+     **/
+    public void updateRatingValue( int newRating ) {
+        this.ratingValue = newRating;
         this.save();
     }
 
