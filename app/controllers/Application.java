@@ -114,6 +114,17 @@ public class Application extends Controller {
         }
 
         List<Cocktail> results = Cocktail.searchByIngredients( Ingredients.searchByNames(parameters) );
+        for ( Cocktail cocktail : results ) {
+            int sum = 0;
+            for(Rating cr : cocktail.getRating()){
+                sum += cr.getRating();
+            }
+
+            if(cocktail.getRating().size() > 0){
+                sum = sum/cocktail.getRating().size();
+            }
+            cocktail.ratingValue = sum;
+        }
         return ok( toJson(results) );
     }
 
@@ -132,12 +143,11 @@ public class Application extends Controller {
      * @return: JSON Result
      **/
     public Result updateRating(Long cid, int rating, String userid) {
-        int sum = 0;
         Cocktail cocktail = Cocktail.findById(cid);
 
         if (userid.length() > 0 && rating > 0 && rating < 6) {
             cocktail.addRating(userid, rating);
-
+            int sum = 0;
             for(Rating cr : cocktail.getRating()){
                 sum += cr.getRating();
             }
