@@ -23,9 +23,9 @@ GET     /logout                         @securesocial.controllers.LoginPage.logo
 
 
 
-GET     /only-facebook                  @controllers.Application.onlyFacebook
-GET     /profile                        @controllers.Application.profile
-GET     /updateRating/:cid/:rating      @controllers.Application.updateRating(cid: Long, rating: Integer)
+GET     /only-facebook                          @controllers.Application.onlyFacebook
+GET     /profile                                @controllers.Application.profile
+GET     /updateRating/:cid/:rating/:userid      @controllers.Application.updateRating(cid: Long, rating: Integer, userid: String)
 
 
 
@@ -42,6 +42,5 @@ GET     /password                       @securesocial.controllers.PasswordChange
 POST    /password                       @securesocial.controllers.PasswordChange.handlePasswordChange
 
 # Providers entry points
-GET     /authenticate/:provider         @securesocial.controllers.ProviderController.authenticate(provider)
-POST    /authenticate/:provider         @securesocial.controllers.ProviderController.authenticateByPost(provider)
-#GET     /not-authorized                @securesocial.controllers.ProviderController.notAuthorized
+GET     /authenticate/:provider     @securesocial.controllers.ProviderController.authenticate(provider)
+POST    /authenticate/:provider     @securesocial.controllers.ProviderController.authenticateByPost(provider)

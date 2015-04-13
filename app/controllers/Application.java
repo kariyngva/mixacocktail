@@ -127,40 +127,27 @@ public class Application extends Controller {
     }
 
     /**
-     * Aðferð: Nær í userID og leyfir notenda að gefa kokteil einkunn
+     * Aðferð: Tekur inn userID og leyfir notenda að gefa kokteil einkunn
      *
-     * @return: Skilar promise af taginu Result
+     * @return: JSON Result
      **/
-    public F.Promise<Result> updateRating(final Long cid, final int rating) {
-        return SecureSocial.currentUser(env).map(new F.Function<Object, Result>() {
-            @Override
-            public Result apply(Object maybeUser) throws Throwable {
-                String id;
-                int sum = 0;
-                Cocktail cocktail = Cocktail.findById(cid);
-                if (maybeUser != null && rating >0 && rating < 6) {
-                    DemoUser user = (DemoUser) maybeUser;
-                    id = user.main.userId();
-                    cocktail.addRating(id, rating);
-                    Logger.info("--------");
-                    Logger.info("id: " + id + "rating: " + rating);
-                    for(Rating cr : cocktail.getRating()){
-                        Logger.info(cr.getRating() + "");
-                        Logger.info(cr +"ratingTest--------");
-                        sum += cr.getRating();
-                        Logger.info("sum" +  sum );
-                    }
-                    if(cocktail.getRating().size() > 0){
-                        sum = sum/cocktail.getRating().size();
-                    }
-                    cocktail.ratingValue = sum;
+    public Result updateRating(Long cid, int rating, String userid) {
+        int sum = 0;
+        Cocktail cocktail = Cocktail.findById(cid);
 
-                } else {
-                    id = "not available. Please log in.";
-                }
-                return ok( toJson( cocktail ) );
+        if (userid.length() > 0 && rating > 0 && rating < 6) {
+            cocktail.addRating(userid, rating);
+
+            for(Rating cr : cocktail.getRating()){
+                sum += cr.getRating();
             }
-        });
+
+            if(cocktail.getRating().size() > 0){
+                sum = sum/cocktail.getRating().size();
+            }
+            cocktail.ratingValue = sum;
+        }
+        return ok( toJson( cocktail ) );
     }
 
     /**

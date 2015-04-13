@@ -234,13 +234,17 @@
       $doc
           .on('click', '.rating a', function (e) {
             e.preventDefault();
-            var link = $(this);
-            $.get(
-                link.attr('href')
-              )
-            .done(function(data) {
-                link.parents('.cocktail').replaceWith( generateMarkup( [data] ).find('.cocktail') );
-            });
+            var link = $(this),
+                userid = FB.getUserID();
+            if ( userid.length )
+            {
+              $.get(
+                  link.attr('href') + '/' + userid
+                )
+              .done(function(data) {
+                  link.parents('.cocktail').replaceWith( generateMarkup( [data] ).find('.cocktail') );
+              });
+            }
           });
   };
 
