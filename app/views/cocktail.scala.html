@@ -1,10 +1,10 @@
-@(cocktail: Cocktail)
+@(cocktail: Cocktail, rating: Integer)
 @main(title = "Mix a cocktail") {
 <div class="wrap">
     <section class="results">
         <div class="cocktail ">
             <h2> @cocktail.name </h2>
-            <div class="rating rating-@cocktail.ratingValue + ">
+            <div class="rating rating-@rating">
                 <ul>
                     <li><a href="/updateRating/@cocktail.id/1">1</a></li>
                     <li><a href="/updateRating/@cocktail.id/2">2</a></li>

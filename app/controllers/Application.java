@@ -93,8 +93,19 @@ public class Application extends Controller {
     }
 
     public static Result getCocktail(long id){
-        Cocktail cocktails = Cocktail.findById(id);
-        return ok(cocktail.render(cocktails));
+        Cocktail singleCocktail = Cocktail.findById(id);
+        int sum = 0;
+        for( Rating cr : singleCocktail.getRating() )
+        {
+            sum += cr.getRating();
+        }
+
+        if( singleCocktail.getRating().size() > 0 )
+        {
+            sum = sum/singleCocktail.getRating().size();
+        }
+
+        return ok( cocktail.render( singleCocktail, sum ) );
     }
 
 
