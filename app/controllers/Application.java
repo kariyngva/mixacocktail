@@ -118,17 +118,6 @@ public class Application extends Controller {
         }
 
         List<Cocktail> results = Cocktail.searchByIngredients( Ingredients.searchByNames(parameters) );
-        for ( Cocktail cocktail : results ) {
-            int sum = 0;
-            for(Rating cr : cocktail.getRating()){
-                sum += cr.getRating();
-            }
-
-            if(cocktail.getRating().size() > 0){
-                sum = sum/cocktail.getRating().size();
-            }
-            cocktail.ratingValue = sum;
-        }
         return ok( toJson(results) );
     }
 
