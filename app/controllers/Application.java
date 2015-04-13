@@ -88,8 +88,23 @@ public class Application extends Controller {
      *
      * @return: skilar Json sem birtir áveðnar margar niðurstöður af kokteilum:fer eftir hve int er á breytunni page.
      **/
-    public static Result getAllCocktails(int page){
-        return ok( toJson(Cocktail.getAllCocktails(page)) );
+    public static Result getAllCocktails(int page) {
+        List<Cocktail> allCocktails = Cocktail.getAllCocktails(page);
+        for(Cocktail c : allCocktails)
+        {
+            int sum = 0;
+            for( Rating cr : c.getRating() )
+            {
+                sum += cr.getRating();
+            }
+
+            if( c.getRating().size() > 0 )
+            {
+                sum = sum/c.getRating().size();
+            }
+            c.ratingValue = sum;
+        }
+        return ok( toJson( allCocktails ) );
     }
 
     public static Result getCocktail(long id){
